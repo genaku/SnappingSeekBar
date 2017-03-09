@@ -1,4 +1,4 @@
-package com.tobishiba.snappingseekbar.library.views;
+package hu.mesys.snappingseekbar.library.views;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.tobishiba.snappingseekbar.R;
-import com.tobishiba.snappingseekbar.library.utils.UiUtils;
+import hu.mesys.snappingseekbar.R;
+import hu.mesys.snappingseekbar.library.utils.UiUtils;
 
 /**
  * User: tobiasbuchholz

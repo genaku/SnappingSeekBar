@@ -2,19 +2,17 @@ package com.tobishiba.snappingseekbar.sample.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.google.gson.Gson;
+
 import com.tobishiba.snappingseekbar.R;
-import com.tobishiba.snappingseekbar.sample.inappbilling.GoogleIabHelper;
-import com.tobishiba.snappingseekbar.sample.inappbilling.GoogleReceipt;
-import com.tobishiba.snappingseekbar.library.utils.UiUtils;
-import com.tobishiba.snappingseekbar.library.views.SnappingSeekBar;
+import hu.mesys.snappingseekbar.library.utils.UiUtils;
+import hu.mesys.snappingseekbar.library.views.SnappingSeekBar;
 
 /**
  * User: tobiasbuchholz

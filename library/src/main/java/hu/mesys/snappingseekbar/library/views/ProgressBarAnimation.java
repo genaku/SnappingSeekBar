@@ -1,4 +1,4 @@
-package com.tobishiba.snappingseekbar.library.views;
+package hu.mesys.snappingseekbar.library.views;
 
 import android.view.animation.Animation;
 import android.view.animation.Transformation;

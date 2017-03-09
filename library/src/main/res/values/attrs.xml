@@ -1,22 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="SnappingSeekBar">
-        <attr name="progressDrawable" format="reference"/>
-        <attr name="thumb" format="reference"/>
-        <attr name="itemsAmount" format="integer"/>
-        <attr name="itemsArrayId" format="reference"/>
-        <attr name="indicatorDrawable" format="reference"/>
-        <attr name="indicatorSize" format="dimension"/>
-        <attr name="progressColor" format="color"/>
-        <attr name="indicatorColor" format="color"/>
+        <attr name="thumbDrawable" format="reference"/>
         <attr name="thumbnailColor" format="color"/>
-        <attr name="textIndicatorColor" format="color"/>
-        <attr name="textStyle" format="reference"/>
-        <attr name="textIndicatorTopMargin" format="dimension"/>
-        <attr name="textSize" format="dimension"/>
-        <attr name="showIndicators" format="boolean"/>
-        <attr name="showTextIndicators" format="boolean"/>
-        <attr name="isMaterialStyle" format="boolean"/>
-        <attr name="isSnapping" format="boolean"/>
+
+        <attr name="questionText" format="string"/>
+        <attr name="questionColor" format="color"/>
+        <attr name="questionTextSize" format="dimension"/>
+        <attr name="questionPadding" format="dimension"/>
+        <attr name="questionPaddingStart" format="dimension"/>
+        <attr name="questionPaddingTop" format="dimension"/>
+        <attr name="questionPaddingEnd" format="dimension"/>
+        <attr name="questionPaddingBottom" format="dimension"/>
+        <attr name="questionMargin" format="dimension"/>
+        <attr name="questionMarginStart" format="dimension"/>
+        <attr name="questionMarginTop" format="dimension"/>
+        <attr name="questionMarginEnd" format="dimension"/>
+        <attr name="questionMarginBottom" format="dimension"/>
+        <attr name="questionGravity" format="enum">
+            <enum name="Start" value="0"/>
+            <enum name="End" value="1"/>
+            <enum name="Center" value="2"/>
+        </attr>
+
+        <attr name="indicatorDrawable" format="reference"/>
+        <attr name="indicatorAmount" format="integer"/>
+        <attr name="indicatorTextArrayId" format="reference"/>
+        <attr name="indicatorSize" format="dimension"/>
+        <attr name="indicatorColor" format="color"/>
+        <attr name="indicatorTextColor" format="color"/>
+        <attr name="indicatorTextSize" format="dimension"/>
+        <attr name="indicatorTextMargin" format="dimension"/>
+        <attr name="indicatorTextMarginStart" format="dimension"/>
+        <attr name="indicatorTextMarginTop" format="dimension"/>
+        <attr name="indicatorTextMarginEnd" format="dimension"/>
+        <attr name="indicatorTextMarginBottom" format="dimension"/>
+
+        <attr name="seekbarPadding" format="dimension"/>
+        <attr name="seekbarPaddingStart" format="dimension"/>
+        <attr name="seekbarPaddingTop" format="dimension"/>
+        <attr name="seekbarPaddingEnd" format="dimension"/>
+        <attr name="seekbarPaddingBottom" format="dimension"/>
+        <attr name="seekbarMargin" format="dimension"/>
+        <attr name="seekbarMarginStart" format="dimension"/>
+        <attr name="seekbarMarginTop" format="dimension"/>
+        <attr name="seekbarMarginEnd" format="dimension"/>
+        <attr name="seekbarMarginBottom" format="dimension"/>
+
+        <attr name="progressDrawable" format="reference"/>
+        <attr name="progressColor" format="color"/>
+
+        <attr name="boundTextColor" format="color"/>
+        <attr name="boundTextMarginLeft" format="dimension"/>
+        <attr name="boundTextMarginTop" format="dimension"/>
+        <attr name="boundTextMarginRight" format="dimension"/>
+        <attr name="boundTextMarginBottom" format="dimension"/>
+        <attr name="boundTextSize" format="dimension"/>
+        <attr name="boundTextMargin" format="integer"/>
+        <attr name="boundStartText" format="string"/>
+        <attr name="boundEndText" format="string"/>
     </declare-styleable>
 </resources>

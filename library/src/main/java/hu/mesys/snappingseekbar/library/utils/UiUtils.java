@@ -1,8 +1,10 @@
 package hu.mesys.snappingseekbar.library.utils;
 
+import android.content.Context;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
@@ -53,6 +55,10 @@ public class UiUtils {
 
     public interface LayoutPreparedListener {
         public void onLayoutPrepared(final View preparedView);
+    }
+
+    public static int getDPinPixel(Context context, float value){
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, context.getResources().getDisplayMetrics()));
     }
 
     public static int getXPositionOfView(final View view) {

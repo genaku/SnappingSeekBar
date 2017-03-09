@@ -2,40 +2,31 @@ package com.tobishiba.snappingseekbar.sample.activities;
 
 import android.app.ActionBar;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.view.*;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
-import com.google.gson.Gson;
+
 import com.tobishiba.snappingseekbar.R;
-import com.tobishiba.snappingseekbar.sample.inappbilling.GoogleIabHelper;
-import com.tobishiba.snappingseekbar.sample.inappbilling.GoogleReceipt;
-import com.tobishiba.snappingseekbar.library.utils.UiUtils;
-import com.tobishiba.snappingseekbar.library.views.SnappingSeekBar;
+import hu.mesys.snappingseekbar.library.utils.UiUtils;
+import hu.mesys.snappingseekbar.library.views.SnappingSeekBar;
 
 /**
  * User: tobiasbuchholz
  * Date: 28.07.14 | Time: 14:18
  */
 public class MainActivity extends Activity implements SnappingSeekBar.OnItemSelectionListener {
-    private GoogleIabHelper mIabHelper;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        initInAppBillingHelper();
         initActionBar();
         initSeekBarsFromLayout();
         initSeekBarProgrammatically();
-    }
-
-    private void initInAppBillingHelper() {
-        mIabHelper = new GoogleIabHelper(this);
-        mIabHelper.setUpServiceConnection();
     }
 
     private void initActionBar() {
@@ -94,50 +85,5 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
     @Override
     public void onItemSelected(final int itemIndex, final String itemString) {
         Toast.makeText(this, getString(R.string.toast_item_selected, itemIndex, itemString), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    protected void onActivityResult(final int requestCode, final int resultCode, final Intent intent) {
-        super.onActivityResult(requestCode, resultCode, intent);
-        handleGooglePurchaseIntent(requestCode, resultCode, intent);
-
-    }
-
-    public void handleGooglePurchaseIntent(final int requestCode, final int resultCode, final Intent intent) {
-        if (isValidPurchaseIntent(requestCode, resultCode, intent)) {
-            consumeItemAsync(intent);
-        }
-    }
-
-    private void consumeItemAsync(final Intent intent) {
-        final String receiptJson = mIabHelper.getPurchaseReceipt(intent);
-        final GoogleReceipt googleReceipt = new Gson().fromJson(receiptJson, GoogleReceipt.class);
-        mIabHelper.consumeItemAsync(googleReceipt.mPurchaseToken);
-    }
-
-    private boolean isValidPurchaseIntent(final int requestCode, final int resultCode, final Intent intent) {
-        return resultCode == Activity.RESULT_OK && mIabHelper.isValidPurchaseIntent(requestCode, intent);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(final Menu menu) {
-        menu.clear();
-        final MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_menu, menu);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(final MenuItem item) {
-        if(item.getItemId() == R.id.action_beer) {
-            mIabHelper.purchaseItem(this, "beer_donation");
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mIabHelper.unbindServiceConnection();
     }
 }

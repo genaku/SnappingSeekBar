@@ -1,4 +1,4 @@
-package com.tobishiba.snappingseekbar.library.utils;
+package hu.mesys.snappingseekbar.library.utils;
 
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;

@@ -1,7 +1,7 @@
 package hu.mesys.snappingseekbar.library.models;
 
 /**
- * Created by Mezei József on 2017. 03. 06..
+ * Created by József Mezei on 2017. 03. 06..
  */
 
 public class SeekbarElement {

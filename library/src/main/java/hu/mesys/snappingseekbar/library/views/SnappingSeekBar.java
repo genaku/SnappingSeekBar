@@ -62,7 +62,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     protected int indicatorTextColor;
     protected int[] indicatorTextMargin;
-    protected int[] indicatorPadding;
     protected String[] indicatorItems = new String[0];
     protected float indicatorTextSize;
 
@@ -167,34 +166,38 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         else if (gravity == 1) questionGravity = Gravity.END;
         else if (gravity == 2) questionGravity = Gravity.CENTER;
 
-        float padding = typedArray.getDimension(R.styleable.SnappingSeekBar_questionPadding, 0);
+        float padding = typedArray.getDimension(R.styleable.SnappingSeekBar_questionPadding, -1);
         float[] paddings = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingEnd, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingBottom, 0)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingStart, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingTop, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingEnd, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingBottom, -1)
         };
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_questionMargin, 0);
+        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_questionMargin, -1);
         float[] margins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginEnd, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginBottom, 0)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginStart, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginTop, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginEnd, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginBottom, -1)
         };
 
-        setQuestionPadding(
-                paddings[0] != 0 ? paddings[0] : padding,
-                paddings[1] != 0 ? paddings[1] : padding,
-                paddings[2] != 0 ? paddings[2] : padding,
-                paddings[3] != 0 ? paddings[3] : padding
-        );
+        if (padding == -1) paddings = checkMarginPadding(paddings);
+        if (paddings != null)
+            setQuestionPadding(
+                    paddings[0] != -1 ? paddings[0] : padding,
+                    paddings[1] != -1 ? paddings[1] : padding,
+                    paddings[2] != -1 ? paddings[2] : padding,
+                    paddings[3] != -1 ? paddings[3] : padding
+            );
 
-        setQuestionMargin(
-                margins[0] != 0 ? margins[0] : margin,
-                margins[1] != 0 ? margins[1] : margin,
-                margins[2] != 0 ? margins[2] : margin,
-                margins[3] != 0 ? margins[3] : margin
-        );
+        if (margin == -1) margins = checkMarginPadding(margins);
+        if (margins != null)
+            setQuestionMargin(
+                    margins[0] != -1 ? margins[0] : margin,
+                    margins[1] != -1 ? margins[1] : margin,
+                    margins[2] != -1 ? margins[2] : margin,
+                    margins[3] != -1 ? margins[3] : margin
+            );
     }
 
     protected void initThumb(final TypedArray typedArray) {
@@ -213,7 +216,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         if (itemsArrayId > 0) setItems(itemsArrayId);
         else setItemsAmount(typedArray.getInteger(R.styleable.SnappingSeekBar_indicatorAmount, 10));
 
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, 0);
+        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
         float[] margins = new float[]{
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginStart, 0),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, Math.round(10 * mDensity)),
@@ -230,35 +233,39 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     protected void initSeekbar(final TypedArray typedArray) {
-        float seekbarPadding = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPadding, 0);
+        float seekbarPadding = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPadding, -1);
         float[] seekbarPaddings = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingStart, Math.round(6 * mDensity)),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingEnd, Math.round(6 * mDensity)),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingBottom, 0)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingStart, -1), //Math.round(6 * mDensity)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingTop, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingEnd, -1), //Math.round(6 * mDensity)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingBottom, -1)
         };
 
-        float seekbarMargin = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMargin, 0);
+        float seekbarMargin = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMargin, -1);
         float[] seekbarMargins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginEnd, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginBottom, 0)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginStart, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginTop, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginEnd, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginBottom, -1)
         };
 
-        setSeekBarPadding(
-                seekbarPaddings[0] != 0 ? seekbarPaddings[0] : seekbarPadding,
-                seekbarPaddings[1] != 0 ? seekbarPaddings[1] : seekbarPadding,
-                seekbarPaddings[2] != 0 ? seekbarPaddings[2] : seekbarPadding,
-                seekbarPaddings[3] != 0 ? seekbarPaddings[3] : seekbarPadding
-        );
+        if (seekbarPadding == -1) seekbarPaddings = checkMarginPadding(seekbarPaddings);
+        if (seekbarPaddings != null)
+            setSeekBarPadding(
+                    seekbarPaddings[0] != -1 ? seekbarPaddings[0] : seekbarPadding,
+                    seekbarPaddings[1] != -1 ? seekbarPaddings[1] : seekbarPadding,
+                    seekbarPaddings[2] != -1 ? seekbarPaddings[2] : seekbarPadding,
+                    seekbarPaddings[3] != -1 ? seekbarPaddings[3] : seekbarPadding
+            );
 
-        setSeekBarMargin(
-                seekbarMargins[0] != 0 ? seekbarMargins[0] : seekbarMargin,
-                seekbarMargins[1] != 0 ? seekbarMargins[1] : seekbarMargin,
-                seekbarMargins[2] != 0 ? seekbarMargins[2] : seekbarMargin,
-                seekbarMargins[3] != 0 ? seekbarMargins[3] : seekbarMargin
-        );
+        if (seekbarMargin == -1) seekbarMargins = checkMarginPadding(seekbarMargins);
+        if (seekbarMargins != null)
+            setSeekBarMargin(
+                    seekbarMargins[0] != -1 ? seekbarMargins[0] : seekbarMargin,
+                    seekbarMargins[1] != -1 ? seekbarMargins[1] : seekbarMargin,
+                    seekbarMargins[2] != -1 ? seekbarMargins[2] : seekbarMargin,
+                    seekbarMargins[3] != -1 ? seekbarMargins[3] : seekbarMargin
+            );
     }
 
     protected void initProgress(final TypedArray typedArray) {
@@ -272,20 +279,22 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         questionColor = typedArray.getColor(R.styleable.SnappingSeekBar_boundTextColor, ContextCompat.getColor(getContext(), R.color.black));
         boundTextSize = typedArray.getDimensionPixelSize(R.styleable.SnappingSeekBar_boundTextSize, 14);
 
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMargin, 0);
+        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMargin, -1);
         float[] margins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginLeft, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginRight, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginBottom, 0)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginLeft, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginTop, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginRight, -1),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginBottom, -1)
         };
 
-        setBoundTextMargin(
-                margins[0] != 0 ? margins[0] : margin,
-                margins[1] != 0 ? margins[1] : margin,
-                margins[2] != 0 ? margins[2] : margin,
-                margins[3] != 0 ? margins[3] : margin
-        );
+        if (margin == -1) margins = checkMarginPadding(margins);
+        if (margins != null)
+            setBoundTextMargin(
+                    margins[0] != 0 ? margins[0] : margin,
+                    margins[1] != 0 ? margins[1] : margin,
+                    margins[2] != 0 ? margins[2] : margin,
+                    margins[3] != 0 ? margins[3] : margin
+            );
     }
 
     public void setItems(final int itemsArrayId) {
@@ -319,6 +328,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         mSeekBar.setThumb(thumbDrawable);
         final int thumbnailWidth = thumbDrawable.getIntrinsicWidth();
         mSeekBar.setPadding(thumbnailWidth / 2, 0, thumbnailWidth / 2, 0);
+    }
+
+    private float[] checkMarginPadding(float[] marginsPaddings) {
+        if (SeekbarUtils.isSetValue(marginsPaddings)) {
+            SeekbarUtils.normalizeValues(marginsPaddings);
+            return marginsPaddings;
+        } else return null;
     }
 
     // Build UI ------------------------------------------------------------------------------------
@@ -359,7 +375,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
         mSeekBar = new SeekBar(mContext);
         mSeekBar.setOnSeekBarChangeListener(this);
-        mSeekBar.setLayoutParams(params);
+//        mSeekBar.setLayoutParams(params);
         mSeekBar.setMax(100 * refine);
         setDrawablesToSeekBar();
 
@@ -408,8 +424,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         indicator.setBackgroundResource(indicatorDrawableId);
         UiUtils.setColor(indicator.getBackground(), indicatorColor);
 
-        if (indicatorPadding != null)
-            indicator.setPadding(indicatorPadding[0], indicatorPadding[1], indicatorPadding[2], indicatorPadding[3]);
         return indicator;
     }
 
@@ -419,7 +433,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         SeekbarElement element = seekBarElementList.get(index);
         indicatorDrawableId = element.getIndicatorDrawableId();
         indicatorColor = element.getIndicatorColor();
-        setIndicatorPadding(element.getIndicatorPadding());
 
         return true;
     }
@@ -696,20 +709,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     public SnappingSeekBar setIndicatorSize(final int indicatorSize) {
         this.indicatorSize = mDensity * indicatorSize;
-        return this;
-    }
-
-    public SnappingSeekBar setIndicatorPadding(float indicatorPadding) {
-        return setIndicatorPadding(indicatorPadding, indicatorPadding, indicatorPadding, indicatorPadding);
-    }
-
-    public SnappingSeekBar setIndicatorPadding(float paddingStart, float paddingTop, float paddingEnd, float paddingBottom) {
-        this.indicatorPadding = new int[]{
-                UiUtils.getDPinPixel(getContext(), paddingStart),
-                UiUtils.getDPinPixel(getContext(), paddingTop),
-                UiUtils.getDPinPixel(getContext(), paddingEnd),
-                UiUtils.getDPinPixel(getContext(), paddingBottom)
-        };
         return this;
     }
 

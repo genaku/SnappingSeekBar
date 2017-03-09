@@ -12,7 +12,6 @@ public class SeekbarElement {
     protected String indicatorText;
     protected int indicatorTextColor;
     protected int indicatorTextSize = 12;
-    protected float indicatorPadding = 0;
 
     public SeekbarElement(int indicatorDrawableId, int indicatorDrawableSize, int indicatorColor, String indicatorText, int indicatorTextSize, String indicatorTextColor) {
         this.indicatorDrawableId = indicatorDrawableId;
@@ -27,14 +26,6 @@ public class SeekbarElement {
         this.indicatorText = indicatorText;
         this.indicatorColor = indicatorColor;
         this.indicatorTextColor = indicatorTextColor;
-    }
-
-    public SeekbarElement(int indicatorDrawableId, int indicatorColor, String indicatorText, int indicatorTextColor, float indicatorPadding) {
-        this.indicatorDrawableId = indicatorDrawableId;
-        this.indicatorText = indicatorText;
-        this.indicatorColor = indicatorColor;
-        this.indicatorTextColor = indicatorTextColor;
-        this.indicatorPadding = indicatorPadding;
     }
 
     // Getter --------------------------------------------------------------------------------------
@@ -62,7 +53,4 @@ public class SeekbarElement {
         return indicatorTextColor;
     }
 
-    public float getIndicatorPadding() {
-        return indicatorPadding;
-    }
 }

@@ -27,6 +27,7 @@ import hu.mesys.snappingseekbar.library.views.SnappingSeekBar;
 public class MainActivity extends Activity implements SnappingSeekBar.OnItemSelectionListener {
 
     private LinearLayout layout;
+    private List<SeekbarElement> elements;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -39,15 +40,13 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
     }
 
     private void createSnappingSeekBarProgrammaticallyFromList() {
-        List<SeekbarElement> elements = new ArrayList<>();
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker), 0));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker), 80));
-        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker), 0));
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker), 5));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker), 0));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "6", ContextCompat.getColor(this, R.color.green_darker), 1));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "7", ContextCompat.getColor(this, R.color.green_darker), 0));
-
+        elements = new ArrayList<>();
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "6", ContextCompat.getColor(this, R.color.green_darker)));
 
         final Resources resources = getResources();
         final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)
@@ -60,8 +59,8 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
                 .setIndicatorSize(10)
                 .setOnItemSelectionListener(this)
                 .setBoundViewLength(2)
-                .setBoundTextStart("Egyáltalán nem")
-                .setBoundTextEnd("Teljes mértékben")
+                .setBoundTextStart("Absolutely not")
+                .setBoundTextEnd("Absolutely yes")
                 .setBoundTextMargin(0, 5, 0, 0)
                 .setBoundTextColor(ContextCompat.getColor(this, R.color.black))
                 .setQuestion("Really really good question")
@@ -81,6 +80,6 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
     @Override
     public void onItemSelected(final int itemIndex, final String itemString) {
-        Toast.makeText(this, getString(R.string.toast_item_selected, String.valueOf(itemIndex), itemString), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.toast_item_selected, elements.get(itemIndex).getIndicatorText(), ""), Toast.LENGTH_SHORT).show();
     }
 }

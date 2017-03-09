@@ -34,7 +34,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected Context mContext;
     protected float mDensity;
     protected OnItemSelectionListener mOnItemSelectionListener;
-    protected int refine = 10; //TODO: Alert H@CK
+    protected int refine = 100; //TODO: Alert H@CK
 
     // Question ------------------------------------------------------------------------------------
     protected AppCompatTextView mQuestion;
@@ -62,6 +62,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     protected int indicatorTextColor;
     protected int[] indicatorTextMargin;
+    protected int[] indicatorPadding;
     protected String[] indicatorItems = new String[0];
     protected float indicatorTextSize;
 
@@ -82,6 +83,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected String boundTextStart;
     protected String boundTextEnd;
     protected float boundTextSize;
+    protected int boundViewLength;
 
     // Objects -------------------------------------------------------------------------------------
     protected List<SeekbarElement> seekBarElementList;
@@ -113,6 +115,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         indicatorSize = 11.3f * mDensity;
         boundTextColor = ContextCompat.getColor(getContext(), R.color.black);
         boundTextSize = 11.3f * mDensity;
+        boundViewLength = 1;
 
         progressColor = ContextCompat.getColor(getContext(), R.color.black);
         indicatorColor = ContextCompat.getColor(getContext(), R.color.blue);
@@ -341,8 +344,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     // Snapping Seek Bar ----------------------------------
     protected void addSnappingSeekBarToUI() {
-        initSeekBar();
-        initIndicators();
+        UiUtils.waitForLayoutPrepared(this, new UiUtils.LayoutPreparedListener() { //TODO:  for debug
+            @Override
+            public void onLayoutPrepared(final View preparedView) {
+                initSeekBar();
+                initIndicators();
+            }
+        });
     }
 
     protected void initSeekBar() {
@@ -400,6 +408,8 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         indicator.setBackgroundResource(indicatorDrawableId);
         UiUtils.setColor(indicator.getBackground(), indicatorColor);
 
+        if (indicatorPadding != null)
+            indicator.setPadding(indicatorPadding[0], indicatorPadding[1], indicatorPadding[2], indicatorPadding[3]);
         return indicator;
     }
 
@@ -409,6 +419,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         SeekbarElement element = seekBarElementList.get(index);
         indicatorDrawableId = element.getIndicatorDrawableId();
         indicatorColor = element.getIndicatorColor();
+        setIndicatorPadding(element.getIndicatorPadding());
 
         return true;
     }
@@ -470,7 +481,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected void addBoundsText() {
         int bound = 0;
 
-        for (int i = 3; (i - 3) <= getChildCount() / indicatorCount; i++)
+        for (int i = 3; (i - 3) <= (getChildCount() / indicatorCount) * boundViewLength; i++)
             bound += getChildAt(i).getWidth();
 
         addTextView(bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
@@ -526,7 +537,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     protected void animateProgressBar(final float toProgress) {
-        final ProgressBarAnimation anim = new ProgressBarAnimation(mSeekBar, fromProgress, Math.round(toProgress * 10));
+        final ProgressBarAnimation anim = new ProgressBarAnimation(mSeekBar, fromProgress, Math.round(toProgress * refine));
         anim.setDuration(200);
         startAnimation(anim);
     }
@@ -688,6 +699,20 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         return this;
     }
 
+    public SnappingSeekBar setIndicatorPadding(float indicatorPadding) {
+        return setIndicatorPadding(indicatorPadding, indicatorPadding, indicatorPadding, indicatorPadding);
+    }
+
+    public SnappingSeekBar setIndicatorPadding(float paddingStart, float paddingTop, float paddingEnd, float paddingBottom) {
+        this.indicatorPadding = new int[]{
+                UiUtils.getDPinPixel(getContext(), paddingStart),
+                UiUtils.getDPinPixel(getContext(), paddingTop),
+                UiUtils.getDPinPixel(getContext(), paddingEnd),
+                UiUtils.getDPinPixel(getContext(), paddingBottom)
+        };
+        return this;
+    }
+
     public SnappingSeekBar setIndicatorTextColor(final int indicatorTextColor) {
         this.indicatorTextColor = indicatorTextColor;
         return this;
@@ -720,7 +745,8 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     public SnappingSeekBar setProgressToIndex(final int index) {
         toProgress = getProgressForIndex(index);
-        mSeekBar.setProgress((int) toProgress * refine);
+        handleSnapToClosestValue();
+        //mSeekBar.setProgress((int) toProgress * refine);
         return this;
     }
 
@@ -777,6 +803,11 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     public SnappingSeekBar setBoundTextColor(int boundTextColor) {
         this.boundTextColor = boundTextColor;
+        return this;
+    }
+
+    public SnappingSeekBar setBoundViewLength(int boundViewLength) {
+        this.boundViewLength = boundViewLength;
         return this;
     }
 

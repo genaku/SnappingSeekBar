@@ -40,11 +40,13 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
     private void createSnappingSeekBarProgrammaticallyFromList() {
         List<SeekbarElement> elements = new ArrayList<>();
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker), 0));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker), 80));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker), 0));
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker), 5));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker), 0));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "6", ContextCompat.getColor(this, R.color.green_darker), 1));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "7", ContextCompat.getColor(this, R.color.green_darker), 0));
 
 
         final Resources resources = getResources();
@@ -54,16 +56,17 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(resources.getColor(R.color.green_darker))
                 .setThumbnailColor(resources.getColor(R.color.yellow_light))
-                .setIndicatorTextSize(14)
-                .setIndicatorSize(14)
+                .setIndicatorTextSize(10)
+                .setIndicatorSize(10)
                 .setOnItemSelectionListener(this)
-                .setBoundTextStart("Bad")
-                .setBoundTextEnd("Perfect")
+                .setBoundViewLength(2)
+                .setBoundTextStart("Egyáltalán nem")
+                .setBoundTextEnd("Teljes mértékben")
                 .setBoundTextMargin(0, 5, 0, 0)
                 .setBoundTextColor(ContextCompat.getColor(this, R.color.black))
                 .setQuestion("Really really good question")
                 .setQuestionColor(ContextCompat.getColor(this, R.color.yellow))
-                .setQuestionTextSize(12)
+                .setQuestionTextSize(17)
                 .build();
 
         UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListener() {

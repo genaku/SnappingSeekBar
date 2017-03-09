@@ -65,7 +65,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     private void initDefaultValues() {
-        mProgressDrawableId = R.drawable.apptheme_scrubber_progress_horizontal_holo_light;
+        mProgressDrawableId = R.drawable.progress;
         mThumbDrawableId = R.drawable.apptheme_scrubber_control_selector_holo_light;
         mIndicatorDrawableId = R.drawable.circle_background;
         mProgressColor = Color.WHITE;
@@ -114,7 +114,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     private void initDrawables(final TypedArray typedArray) {
-        mProgressDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_progressDrawable, R.drawable.apptheme_scrubber_progress_horizontal_holo_light);
+        mProgressDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_progressDrawable, R.drawable.progress);
         mThumbDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_thumb, R.drawable.apptheme_scrubber_control_selector_holo_light);
         mIndicatorDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorDrawable, R.drawable.circle_background);
     }

@@ -69,7 +69,7 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
     private SnappingSeekBar createSnappingSeekBarProgrammatically() {
         final Resources resources = getResources();
         final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this);
-        snappingSeekBar.setProgressDrawable(R.drawable.apptheme_scrubber_progress_horizontal_holo_light);
+        snappingSeekBar.setProgressDrawable(R.drawable.progress);
         snappingSeekBar.setThumbDrawable(R.drawable.apptheme_scrubber_control_selector_holo_light);
         snappingSeekBar.setItems(new String[]{getString(R.string.programmatically), getString(R.string.created), getString(R.string.seekBar)});
         snappingSeekBar.setProgressColor(resources.getColor(R.color.green_darker));

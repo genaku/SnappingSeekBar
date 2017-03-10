@@ -52,9 +52,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected int[] seekbarPadding;
     protected int[] seekbarMargin;
 
-    protected int progressBaseDrawable;
-    protected int progressColor;
-
     // Indicators ----------------------------------------------------------------------------------
     protected List<View> indicatorList;
     protected int reachedIndicator;
@@ -76,10 +73,14 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     // Progress ------------------------------------------------------------------------------------
     protected Drawable progressDrawable;
+    protected int progressBaseDrawable;
+    protected int progressColor;
     protected int fromProgress;
     protected float toProgress;
 
     // Boundary Texts ------------------------------------------------------------------------------
+    protected AppCompatTextView mBoundTextStart;
+    protected AppCompatTextView mBoundTextEnd;
     protected int boundTextColor;
     protected int[] boundTextMargin;
     protected String boundTextStart;
@@ -130,6 +131,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     public SnappingSeekBar(final Context context, final AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
+
         initDensity();
         handleAttributeSet(attrs);
 
@@ -152,9 +154,9 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar build() {
+
         addQuestionToUI();
         addSnappingSeekBarToUI();
-
         return this;
     }
 
@@ -276,7 +278,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         boundTextStart = typedArray.getString(R.styleable.SnappingSeekBar_boundStartText);
         boundTextEnd = typedArray.getString(R.styleable.SnappingSeekBar_boundEndText);
         questionColor = typedArray.getColor(R.styleable.SnappingSeekBar_boundTextColor, ContextCompat.getColor(getContext(), R.color.black));
-        boundTextSize = typedArray.getDimensionPixelSize(R.styleable.SnappingSeekBar_boundTextSize, 14);
+        boundTextSize = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextSize, 11.3f * mDensity);
 
         float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMargin, -1);
         float[] margins = new float[]{
@@ -341,6 +343,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected void addQuestionToUI() {
         if (question == null || question.isEmpty()) return;
 
+        removeView(mQuestion);
         mQuestion = new AppCompatTextView(getContext());
         mQuestion.setId(R.id.question);
         mQuestion.setText(question);
@@ -363,12 +366,14 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
             @Override
             public void onLayoutPrepared(final View preparedView) {
                 initSeekBar();
+                removeIndicator();
                 initIndicators();
             }
         });
     }
 
     protected void initSeekBar() {
+        if (mSeekBar != null) return;
         final LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (mQuestion != null) params.addRule(RelativeLayout.BELOW, mQuestion.getId());
 
@@ -415,6 +420,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         View indicator = createIndicator(index);
         addView(indicator, indicatorParams);
         indicatorList.add(indicator);
+    }
+
+    protected void removeIndicator() {
+        if (indicatorList == null) return;
+        for (View v : indicatorList)
+            removeView(v);
+        indicatorList.clear();
     }
 
     protected View createIndicator(int index) {
@@ -515,6 +527,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     // Bounds Text----------------------------------------------------------------------------------
     protected void addBoundsText() {
+        removeTextView();
         if ((boundTextStart == null || boundTextStart.isEmpty()) && (boundTextEnd == null || boundTextEnd.isEmpty()))
             return;
         int bound = 0;
@@ -525,14 +538,19 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
             bound += UiUtils.getXPositionOfView(view);
         }
 
-        addTextView(bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
-        addTextView(bound, boundTextEnd, RelativeLayout.ALIGN_PARENT_RIGHT);
+        addTextView(mBoundTextStart, bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
+        addTextView(mBoundTextEnd, bound, boundTextEnd, RelativeLayout.ALIGN_PARENT_RIGHT);
     }
 
-    protected void addTextView(int bound, String text, int verb) {
+    protected void removeTextView() {
+        removeView(mBoundTextStart);
+        removeView(mBoundTextEnd);
+    }
+
+    protected void addTextView(AppCompatTextView textBound, int bound, String text, int verb) {
         final LayoutParams textParams = new LayoutParams(bound, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (mQuestion != null) textParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
-        final TextView textBound = new TextView(mContext);
+        if (textBound == null) textBound = new AppCompatTextView(mContext);
 
         textBound.setText(text);
         textBound.setTextSize(boundTextSize / mDensity);

@@ -28,6 +28,7 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
     private LinearLayout layout;
     private List<SeekbarElement> elements;
+    private SnappingSeekBar snappingSeekBar;
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
@@ -35,6 +36,7 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         setContentView(R.layout.activity_main);
 
         layout = (LinearLayout) findViewById(R.id.activity_main_layout);
+        snappingSeekBar = (SnappingSeekBar) findViewById(R.id.snapp);
 
         createSnappingSeekBarProgrammaticallyFromList();
     }
@@ -49,8 +51,8 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.green_darker)));
 
         final Resources resources = getResources();
-        final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)
-                .setItems(elements)
+        //final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)
+        snappingSeekBar.setItems(elements)
                 .setQuestionGravity(Gravity.CENTER)
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(resources.getColor(R.color.green_darker))
@@ -75,7 +77,7 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
             }
         });
 
-        layout.addView(snappingSeekBar);
+//        layout.addView(snappingSeekBar);
     }
 
     @Override

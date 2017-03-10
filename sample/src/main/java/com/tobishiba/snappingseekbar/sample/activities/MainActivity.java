@@ -41,12 +41,12 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
     private void createSnappingSeekBarProgrammaticallyFromList() {
         elements = new ArrayList<>();
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "6", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "1", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), ContextCompat.getColor(this, R.color.red), "2", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "3", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), ContextCompat.getColor(this, R.color.red), "4", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "5", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.green_darker)));
 
         final Resources resources = getResources();
         final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)

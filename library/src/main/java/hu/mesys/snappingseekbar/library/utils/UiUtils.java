@@ -54,7 +54,7 @@ public class UiUtils {
     }
 
     public interface LayoutPreparedListener {
-        public void onLayoutPrepared(final View preparedView);
+        void onLayoutPrepared(final View preparedView);
     }
 
     public static int getDPinPixel(Context context, float value){

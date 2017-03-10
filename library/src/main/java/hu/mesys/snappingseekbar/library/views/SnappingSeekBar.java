@@ -148,8 +148,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar build() {
-        initDefaultValues();
-
         addQuestionToUI();
         addSnappingSeekBarToUI();
 
@@ -219,17 +217,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
         float[] margins = new float[]{
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, Math.round(10 * mDensity)),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, Math.round(30 * mDensity)),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginEnd, 0),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginBottom, 0)
         };
 
-        setIndicatorTextMargin(
-                margins[0] != 0 ? margins[0] : margin,
-                margins[1] != 0 ? margins[1] : margin,
-                margins[2] != 0 ? margins[2] : margin,
-                margins[3] != 0 ? margins[3] : margin
-        );
+        if (margin != -1) setIndicatorTextMargin(margin);
+        else setIndicatorTextMargin(margins);
     }
 
     protected void initSeekbar(final TypedArray typedArray) {
@@ -492,23 +486,38 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     // Bounds Text----------------------------------------------------------------------------------
     protected void addBoundsText() {
+        if ((boundTextStart == null || boundTextStart.isEmpty()) && (boundTextEnd == null || boundTextEnd.isEmpty()))
+            return;
         int bound = 0;
 
-        for (int i = 3; (i - 3) <= (getChildCount() / indicatorCount) * boundViewLength; i++)
-            bound += getChildAt(i).getWidth();
+        // FIXME no question
+        for (int i = 2; (i - 2) < Math.pow(2, boundViewLength); i += 2) { //sequence 1: question, 2: seekbar, 3: indicator, 4: indicatorText, 5: indicator...
+            View view = getChildAt(i);
+//            LayoutParams params = (LayoutParams) view.getLayoutParams();
+            bound += UiUtils.getXPositionOfView(view);
+//            bound += view.getWidth();
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+//                bound += params.leftMargin == 0 ? params.getMarginStart() : params.leftMargin;
+//                bound += params.rightMargin == 0 ? params.getMarginEnd() : params.rightMargin;
+//            } else {
+//                bound += params.leftMargin;
+//                bound += params.rightMargin;
+//            }
+        }
 
         addTextView(bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
         addTextView(bound, boundTextEnd, RelativeLayout.ALIGN_PARENT_RIGHT);
     }
 
     protected void addTextView(int bound, String text, int verb) {
-        final LayoutParams textParams = new LayoutParams(UiUtils.getDPinPixel(getContext(), bound), ViewGroup.LayoutParams.WRAP_CONTENT);
+        final LayoutParams textParams = new LayoutParams(bound, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (mQuestion != null) textParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
         final TextView textBound = new TextView(mContext);
 
         textBound.setText(text);
         textBound.setTextSize(boundTextSize / mDensity);
         textBound.setTextColor(boundTextColor);
+        textBound.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellow));
         textBound.setGravity(verb == RelativeLayout.ALIGN_PARENT_RIGHT ? Gravity.END : Gravity.START);
 
         if (boundTextMargin != null) {
@@ -715,6 +724,15 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     public SnappingSeekBar setIndicatorTextColor(final int indicatorTextColor) {
         this.indicatorTextColor = indicatorTextColor;
         return this;
+    }
+
+    private void setIndicatorTextMargin(float[] margin) {
+        indicatorTextMargin = new int[]{
+                (int) margin[0],
+                (int) margin[1],
+                (int) margin[2],
+                (int) margin[3]
+        };
     }
 
     public SnappingSeekBar setIndicatorTextMargin(float margin) {

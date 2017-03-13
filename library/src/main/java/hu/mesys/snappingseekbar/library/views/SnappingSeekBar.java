@@ -54,6 +54,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     // Indicators ----------------------------------------------------------------------------------
     protected List<View> indicatorList;
+    protected List<View> indicatorTextList;
     protected int reachedIndicator;
     protected int indicatorCount;
     protected int indicatorColor;
@@ -112,6 +113,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         seekbarColor = -1;
 
         indicatorList = new ArrayList<>();
+        indicatorTextList = new ArrayList<>();
         thumbDrawableId = R.drawable.apptheme_scrubber_control_selector_holo_light;
         indicatorDrawableId = R.drawable.circle_background;
         indicatorTextMargin = new int[]{0, Math.round(35 * mDensity), 0, 0};
@@ -135,6 +137,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         initDensity();
         handleAttributeSet(attrs);
 
+        if (indicatorCount == 0) return;
         addQuestionToUI();
         addSnappingSeekBarToUI();
     }
@@ -211,6 +214,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     protected void initIndicator(final TypedArray typedArray) {
         indicatorList = new ArrayList<>();
+        indicatorTextList = new ArrayList<>();
         indicatorDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorDrawable, R.drawable.circle_background);
         indicatorSize = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorSize, 11.3f * mDensity);
         indicatorColor = typedArray.getColor(R.styleable.SnappingSeekBar_indicatorColor, ContextCompat.getColor(getContext(), R.color.blue));
@@ -219,7 +223,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
         final int itemsArrayId = typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorTextArrayId, 0);
         if (itemsArrayId > 0) setItems(itemsArrayId);
-        else setItemsAmount(typedArray.getInteger(R.styleable.SnappingSeekBar_indicatorAmount, 10));
+        else setItemsAmount(typedArray.getInteger(R.styleable.SnappingSeekBar_indicatorAmount, 0));
 
         float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
         float[] margins = new float[]{
@@ -312,11 +316,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public void setItemsAmount(final int itemsAmount) {
-        if (itemsAmount > 1) {
-            indicatorCount = itemsAmount;
-        } else {
-            throw new IllegalStateException("SnappingSeekBar has to contain at least 2 items");
-        }
+        indicatorCount = itemsAmount;
     }
 
     protected void setDrawablesToSeekBar() {
@@ -366,7 +366,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
             @Override
             public void onLayoutPrepared(final View preparedView) {
                 initSeekBar();
-                removeIndicator();
                 initIndicators();
             }
         });
@@ -402,6 +401,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     protected void initIndicators(final int seekBarWidth) {
+        removeIndicator();
         for (int i = 0; i < indicatorCount; i++) {
             addIndicator(seekBarWidth, i);
             addIndicatorTextIfNeeded(seekBarWidth, i);
@@ -424,8 +424,10 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
     protected void removeIndicator() {
         if (indicatorList == null) return;
-        for (View v : indicatorList)
-            removeView(v);
+        for (int i = 0; i < indicatorList.size(); i++) {
+            removeView(indicatorList.get(i));
+            removeView(indicatorTextList.get(i));
+        }
         indicatorList.clear();
     }
 
@@ -491,6 +493,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         View view = createIndicatorText(index);
         textParams.setMargins(indicatorTextMargin[0], indicatorTextMargin[1], indicatorTextMargin[2], indicatorTextMargin[3]);
         addView(view, textParams);
+        indicatorTextList.add(view);
         UiUtils.waitForLayoutPrepared(view, createTextIndicatorLayoutPreparedListener(numberLeftMargin));
 
         if (index == indicatorCount - 1) view.post(new Runnable() {
@@ -530,15 +533,11 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         removeTextView();
         if ((boundTextStart == null || boundTextStart.isEmpty()) && (boundTextEnd == null || boundTextEnd.isEmpty()))
             return;
-        int bound = 0;
+        int bound = UiUtils.getXPositionOfView(indicatorList.get(boundViewLength));
 
-        // FIXME no question
-        for (int i = 2; (i - 2) < Math.pow(2, boundViewLength); i += 2) { //sequence 1: question, 2: seekbar, 3: indicator, 4: indicatorText, 5: indicator...
-            View view = getChildAt(i);
-            bound += UiUtils.getXPositionOfView(view);
-        }
-
+        if (mBoundTextStart == null) mBoundTextStart = new AppCompatTextView(getContext());
         addTextView(mBoundTextStart, bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
+        if (mBoundTextEnd == null) mBoundTextEnd = new AppCompatTextView(getContext());
         addTextView(mBoundTextEnd, bound, boundTextEnd, RelativeLayout.ALIGN_PARENT_RIGHT);
     }
 
@@ -550,8 +549,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected void addTextView(AppCompatTextView textBound, int bound, String text, int verb) {
         final LayoutParams textParams = new LayoutParams(bound, ViewGroup.LayoutParams.WRAP_CONTENT);
         if (mQuestion != null) textParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
-        if (textBound == null) textBound = new AppCompatTextView(mContext);
-
         textBound.setText(text);
         textBound.setTextSize(boundTextSize / mDensity);
         textBound.setTextColor(boundTextColor);

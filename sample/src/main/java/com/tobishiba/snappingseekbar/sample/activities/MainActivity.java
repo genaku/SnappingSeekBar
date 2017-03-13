@@ -30,6 +30,10 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
     private List<SeekbarElement> elements;
     private SnappingSeekBar snappingSeekBar;
 
+    private int colorBlack;
+    private int colorRed;
+    private int colorGrey;
+
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,14 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         layout = (LinearLayout) findViewById(R.id.activity_main_layout);
         snappingSeekBar = (SnappingSeekBar) findViewById(R.id.snapp);
 
+        init();
         createSnappingSeekBarProgrammaticallyFromList();
+    }
+
+    private void init(){
+        colorBlack = ContextCompat.getColor(this, R.color.black);
+        colorRed = ContextCompat.getColor(this, R.color.red);
+        colorGrey = ContextCompat.getColor(this, R.color.grey);
     }
 
     private void createSnappingSeekBarProgrammaticallyFromList() {
@@ -53,21 +64,23 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         final Resources resources = getResources();
         //final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)
         snappingSeekBar.setItems(elements)
-                .setQuestionGravity(Gravity.CENTER)
-                .setProgressBaseDrawable(R.drawable.progress)
-                .setProgressColor(resources.getColor(R.color.green_darker))
-                .setThumbnailColor(resources.getColor(R.color.yellow_light))
-                .setIndicatorTextSize(10)
-                .setIndicatorSize(10)
-                .setOnItemSelectionListener(this)
-                .setBoundViewLength(2)
-                .setBoundTextStart("Absolutely not")
-                .setBoundTextEnd("Absolutely yes")
-                .setBoundTextMargin(0, 5, 0, 0)
-                .setBoundTextColor(ContextCompat.getColor(this, R.color.black))
-                .setQuestion("Really really good question")
-                .setQuestionColor(ContextCompat.getColor(this, R.color.yellow))
+                .setQuestionGravity(Gravity.START)
+                .setQuestion("Really hard question")
+                .setQuestionColor(colorBlack)
                 .setQuestionTextSize(17)
+                .setQuestionPadding(0, 10, 0, 10)
+
+                .setProgressBaseDrawable(R.drawable.progress)
+                .setProgressColor(colorRed)
+                .setThumbnailColor(colorRed)
+                .setIndicatorTextSize(14)
+                .setIndicatorSize(14)
+                .setBoundTextStart("low")
+                .setBoundTextEnd("hight")
+                .setBoundTextMargin(0, 5, 0, 0)
+                .setBoundViewLength(3)
+                .setBoundTextColor(colorBlack)
+                .setOnItemSelectionListener(this)
                 .build();
 
         UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListener() {

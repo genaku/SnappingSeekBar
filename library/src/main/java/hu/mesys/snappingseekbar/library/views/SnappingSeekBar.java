@@ -1,18 +1,17 @@
 package hu.mesys.snappingseekbar.library.views;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatSeekBar;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
-import android.view.Gravity;
+import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,24 +36,12 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected OnItemSelectionListener mOnItemSelectionListener;
     protected int refine = 100; //TODO: Alert H@CK
 
-    // Question ------------------------------------------------------------------------------------
-    protected AppCompatTextView mQuestion;
-    protected String question;
-    protected int questionColor;
-    protected int questionGravity;
-    protected float questionTextSize;
-    protected int[] questionPadding;
-    protected int[] questionMargin;
-
     // Seek Bar ------------------------------------------------------------------------------------
     protected SeekBar mSeekBar;
-    protected int seekbarColor;
-    protected int[] seekbarPadding;
-    protected int[] seekbarMargin;
 
     // Indicators ----------------------------------------------------------------------------------
     protected List<View> indicatorList;
-    protected List<View> indicatorTextList;
+    protected List<AppCompatTextView> indicatorTextList;
     protected int reachedIndicator;
     protected int indicatorCount;
     protected int indicatorColor;
@@ -62,32 +49,18 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected int indicatorDrawableId;
 
     protected int indicatorTextColor;
-    protected int[] indicatorTextMargin;
+    protected float indicatorTextMarginTop;
     protected String[] indicatorItems = new String[0];
     protected float indicatorTextSize;
 
     // Thumb ---------------------------------------------------------------------------------------
     protected int thumbPosition = NOT_INITIALIZED_THUMB_POSITION;
     protected Drawable thumbDrawable;
-    protected int thumbDrawableId;
-    protected int thumbnailColor;
 
     // Progress ------------------------------------------------------------------------------------
     protected Drawable progressDrawable;
-    protected int progressBaseDrawable;
-    protected int progressColor;
     protected int fromProgress;
     protected float toProgress;
-
-    // Boundary Texts ------------------------------------------------------------------------------
-    protected AppCompatTextView mBoundTextStart;
-    protected AppCompatTextView mBoundTextEnd;
-    protected int boundTextColor;
-    protected int[] boundTextMargin;
-    protected String boundTextStart;
-    protected String boundTextEnd;
-    protected float boundTextSize;
-    protected int boundViewLength;
 
     // Objects -------------------------------------------------------------------------------------
     protected List<SeekbarElement> seekBarElementList;
@@ -97,6 +70,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         mContext = context;
 
         initDensity();
+        initSeekBar();
         initDefaultValues();
     }
 
@@ -105,29 +79,21 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     protected void initDefaultValues() {
-        questionColor = ContextCompat.getColor(getContext(), R.color.black);
-        questionTextSize = 14;
-        questionGravity = Gravity.START;
-
-        progressBaseDrawable = R.drawable.progress;
-        seekbarColor = -1;
+        setProgressBaseDrawable(R.drawable.progress);
 
         indicatorList = new ArrayList<>();
         indicatorTextList = new ArrayList<>();
-        thumbDrawableId = R.drawable.apptheme_scrubber_control_selector_holo_light;
-        indicatorDrawableId = R.drawable.circle_background;
-        indicatorTextMargin = new int[]{0, Math.round(35 * mDensity), 0, 0};
-        indicatorTextSize = 12 * mDensity;
-        indicatorSize = 11.3f * mDensity;
-        boundTextColor = ContextCompat.getColor(getContext(), R.color.black);
-        boundTextSize = 11.3f * mDensity;
-        boundViewLength = 1;
+        setThumbDrawable(R.drawable.apptheme_scrubber_control_selector_holo_light);
+        setIndicatorDrawable(R.drawable.circle_background);
+        setIndicatorTextMargin(0, Math.round(35 * mDensity), 0, 0);
+        setIndicatorTextSize(12 * mDensity);
+        setIndicatorSize(11.3f * mDensity);
+        indicatorTextMarginTop = 15 * mDensity;
 
-        progressColor = ContextCompat.getColor(getContext(), R.color.black);
-        indicatorColor = ContextCompat.getColor(getContext(), R.color.blue);
-        thumbnailColor = ContextCompat.getColor(getContext(), R.color.yellow);
-        indicatorTextColor = ContextCompat.getColor(getContext(), R.color.black);
-        thumbnailColor = ContextCompat.getColor(getContext(), R.color.green);
+        setProgressColor(ContextCompat.getColor(getContext(), R.color.black));
+        setIndicatorColor(ContextCompat.getColor(getContext(), R.color.blue));
+        setIndicatorTextColor(ContextCompat.getColor(getContext(), R.color.black));
+        setThumbnailColor(ContextCompat.getColor(getContext(), R.color.green));
     }
 
     public SnappingSeekBar(final Context context, final AttributeSet attrs) {
@@ -135,171 +101,78 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         mContext = context;
 
         initDensity();
+        initSeekBar();
         handleAttributeSet(attrs);
 
         if (indicatorCount == 0) return;
-        addQuestionToUI();
-        addSnappingSeekBarToUI();
+        initIndicators();
     }
 
     protected void handleAttributeSet(final AttributeSet attrs) {
         final TypedArray typedArray = mContext.getTheme().obtainStyledAttributes(attrs, R.styleable.SnappingSeekBar, 0, 0);
         try {
-            initQuestion(typedArray);
             initThumb(typedArray);
             initIndicator(typedArray);
             initSeekbar(typedArray);
             initProgress(typedArray);
-            initBoundaryText(typedArray);
         } finally {
             typedArray.recycle();
         }
     }
 
-    public SnappingSeekBar build() {
-
-        addQuestionToUI();
-        addSnappingSeekBarToUI();
-        return this;
-    }
-
-    protected void initQuestion(final TypedArray typedArray) {
-        question = typedArray.getString(R.styleable.SnappingSeekBar_questionText);
-        questionColor = typedArray.getColor(R.styleable.SnappingSeekBar_questionColor, ContextCompat.getColor(getContext(), R.color.black));
-        questionTextSize = typedArray.getInt(R.styleable.SnappingSeekBar_questionTextSize, 14);
-        int gravity = typedArray.getInt(R.styleable.SnappingSeekBar_questionGravity, 0);
-
-        if (gravity == 0) questionGravity = Gravity.START;
-        else if (gravity == 1) questionGravity = Gravity.END;
-        else if (gravity == 2) questionGravity = Gravity.CENTER;
-
-        float padding = typedArray.getDimension(R.styleable.SnappingSeekBar_questionPadding, -1);
-        float[] paddings = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingStart, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingTop, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingEnd, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionPaddingBottom, -1)
-        };
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_questionMargin, -1);
-        float[] margins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginStart, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginTop, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginEnd, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_questionMarginBottom, -1)
-        };
-
-        if (padding == -1) paddings = checkMarginPadding(paddings);
-        if (paddings != null)
-            setQuestionPadding(
-                    paddings[0] != -1 ? paddings[0] : padding,
-                    paddings[1] != -1 ? paddings[1] : padding,
-                    paddings[2] != -1 ? paddings[2] : padding,
-                    paddings[3] != -1 ? paddings[3] : padding
-            );
-
-        if (margin == -1) margins = checkMarginPadding(margins);
-        if (margins != null)
-            setQuestionMargin(
-                    margins[0] != -1 ? margins[0] : margin,
-                    margins[1] != -1 ? margins[1] : margin,
-                    margins[2] != -1 ? margins[2] : margin,
-                    margins[3] != -1 ? margins[3] : margin
-            );
-    }
-
     protected void initThumb(final TypedArray typedArray) {
-        thumbDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_thumbDrawable, R.drawable.apptheme_scrubber_control_selector_holo_light);
-        thumbnailColor = typedArray.getColor(R.styleable.SnappingSeekBar_thumbnailColor, ContextCompat.getColor(getContext(), R.color.yellow));
+        setThumbDrawable(typedArray.getResourceId(R.styleable.SnappingSeekBar_thumbDrawable, R.drawable.apptheme_scrubber_control_selector_holo_light));
+        setThumbnailColor(typedArray.getColor(R.styleable.SnappingSeekBar_thumbnailColor, ContextCompat.getColor(getContext(), R.color.yellow)));
     }
 
     protected void initIndicator(final TypedArray typedArray) {
         indicatorList = new ArrayList<>();
         indicatorTextList = new ArrayList<>();
-        indicatorDrawableId = typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorDrawable, R.drawable.circle_background);
-        indicatorSize = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorSize, 11.3f * mDensity);
-        indicatorColor = typedArray.getColor(R.styleable.SnappingSeekBar_indicatorColor, ContextCompat.getColor(getContext(), R.color.blue));
-        indicatorTextColor = typedArray.getColor(R.styleable.SnappingSeekBar_indicatorTextColor, ContextCompat.getColor(getContext(), R.color.black));
-        indicatorTextSize = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextSize, 12 * mDensity);
+        setIndicatorDrawable(typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorDrawable, R.drawable.circle_background));
+        setIndicatorSize(typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorSize, 11.3f * mDensity));
+        setIndicatorColor(typedArray.getColor(R.styleable.SnappingSeekBar_indicatorColor, ContextCompat.getColor(getContext(), R.color.blue)));
+        setIndicatorTextColor(typedArray.getColor(R.styleable.SnappingSeekBar_indicatorTextColor, ContextCompat.getColor(getContext(), R.color.black)));
+        setIndicatorTextSize(typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextSize, 12 * mDensity));
 
         final int itemsArrayId = typedArray.getResourceId(R.styleable.SnappingSeekBar_indicatorTextArrayId, 0);
         if (itemsArrayId > 0) setItems(itemsArrayId);
         else setItemsAmount(typedArray.getInteger(R.styleable.SnappingSeekBar_indicatorAmount, 0));
 
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
-        float[] margins = new float[]{
+        setIndicatorTextMargin(
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginStart, 0),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, Math.round(30 * mDensity)),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginEnd, 0),
                 typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginBottom, 0)
-        };
-
+        );
+        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
         if (margin != -1) setIndicatorTextMargin(margin);
-        else setIndicatorTextMargin(margins);
+        indicatorTextMarginTop = 15 * mDensity;
     }
 
     protected void initSeekbar(final TypedArray typedArray) {
+
+        setSeekBarPadding(
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingStart, mSeekBar.getPaddingLeft() / mDensity), //Math.round(6 * mDensity)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingTop, 0),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingEnd, mSeekBar.getPaddingRight() / mDensity), //Math.round(6 * mDensity)
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingBottom, 0));
+
         float seekbarPadding = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPadding, -1);
-        float[] seekbarPaddings = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingStart, -1), //Math.round(6 * mDensity)
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingTop, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingEnd, -1), //Math.round(6 * mDensity)
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingBottom, -1)
-        };
+        if (seekbarPadding != -1) setSeekBarPadding(seekbarPadding);
 
+
+        setSeekBarMargin(
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginStart, 0),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginTop, 0),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginEnd, 0),
+                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginBottom, 0));
         float seekbarMargin = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMargin, -1);
-        float[] seekbarMargins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginStart, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginTop, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginEnd, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginBottom, -1)
-        };
-
-        if (seekbarPadding == -1) seekbarPaddings = checkMarginPadding(seekbarPaddings);
-        if (seekbarPaddings != null)
-            setSeekBarPadding(
-                    seekbarPaddings[0] != -1 ? seekbarPaddings[0] : seekbarPadding,
-                    seekbarPaddings[1] != -1 ? seekbarPaddings[1] : seekbarPadding,
-                    seekbarPaddings[2] != -1 ? seekbarPaddings[2] : seekbarPadding,
-                    seekbarPaddings[3] != -1 ? seekbarPaddings[3] : seekbarPadding
-            );
-
-        if (seekbarMargin == -1) seekbarMargins = checkMarginPadding(seekbarMargins);
-        if (seekbarMargins != null)
-            setSeekBarMargin(
-                    seekbarMargins[0] != -1 ? seekbarMargins[0] : seekbarMargin,
-                    seekbarMargins[1] != -1 ? seekbarMargins[1] : seekbarMargin,
-                    seekbarMargins[2] != -1 ? seekbarMargins[2] : seekbarMargin,
-                    seekbarMargins[3] != -1 ? seekbarMargins[3] : seekbarMargin
-            );
+        if (seekbarMargin != -1) setSeekBarMargin(seekbarMargin);
     }
 
     protected void initProgress(final TypedArray typedArray) {
-        progressBaseDrawable = typedArray.getResourceId(R.styleable.SnappingSeekBar_progressDrawable, R.drawable.progress);
-        progressColor = typedArray.getColor(R.styleable.SnappingSeekBar_progressColor, ContextCompat.getColor(getContext(), R.color.black));
-    }
-
-    protected void initBoundaryText(final TypedArray typedArray) {
-        boundTextStart = typedArray.getString(R.styleable.SnappingSeekBar_boundStartText);
-        boundTextEnd = typedArray.getString(R.styleable.SnappingSeekBar_boundEndText);
-        questionColor = typedArray.getColor(R.styleable.SnappingSeekBar_boundTextColor, ContextCompat.getColor(getContext(), R.color.black));
-        boundTextSize = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextSize, 11.3f * mDensity);
-
-        float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMargin, -1);
-        float[] margins = new float[]{
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginLeft, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginTop, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginRight, -1),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_boundTextMarginBottom, -1)
-        };
-
-        if (margin == -1) margins = checkMarginPadding(margins);
-        if (margins != null)
-            setBoundTextMargin(
-                    margins[0] != 0 ? margins[0] : margin,
-                    margins[1] != 0 ? margins[1] : margin,
-                    margins[2] != 0 ? margins[2] : margin,
-                    margins[3] != 0 ? margins[3] : margin
-            );
+        setProgressBaseDrawable(typedArray.getResourceId(R.styleable.SnappingSeekBar_progressDrawable, R.drawable.progress));
+        setProgressColor(typedArray.getColor(R.styleable.SnappingSeekBar_progressColor, ContextCompat.getColor(getContext(), R.color.black)));
     }
 
     public void setItems(final int itemsArrayId) {
@@ -319,18 +192,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         indicatorCount = itemsAmount;
     }
 
-    protected void setDrawablesToSeekBar() {
-        final Resources resources = getResources();
-        progressDrawable = resources.getDrawable(progressBaseDrawable);
-        thumbDrawable = resources.getDrawable(thumbDrawableId);
-        UiUtils.setColor(progressDrawable, progressColor);
-        UiUtils.setColor(thumbDrawable, thumbnailColor);
-        mSeekBar.setProgressDrawable(progressDrawable);
-        mSeekBar.setThumb(thumbDrawable);
-        final int thumbnailWidth = thumbDrawable.getIntrinsicWidth();
-        mSeekBar.setPadding(thumbnailWidth / 2, 0, thumbnailWidth / 2, 0);
-    }
-
     private float[] checkMarginPadding(float[] marginsPaddings) {
         if (SeekbarUtils.isSetValue(marginsPaddings)) {
             SeekbarUtils.normalizeValues(marginsPaddings);
@@ -339,53 +200,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     // Build UI ------------------------------------------------------------------------------------
-    // Question -------------------------------------------
-    protected void addQuestionToUI() {
-        if (question == null || question.isEmpty()) return;
-
-        removeView(mQuestion);
-        mQuestion = new AppCompatTextView(getContext());
-        mQuestion.setId(R.id.question);
-        mQuestion.setText(question);
-        mQuestion.setTextColor(questionColor);
-        mQuestion.setTextSize(questionTextSize);
-        mQuestion.setGravity(questionGravity);
-
-        final LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (questionPadding != null)
-            mQuestion.setPadding(questionPadding[0], questionPadding[1], questionPadding[2], questionPadding[3]);
-        if (questionMargin != null)
-            params.setMargins(questionMargin[0], questionMargin[1], questionMargin[2], questionMargin[3]);
-
-        addView(mQuestion, params);
-    }
-
     // Snapping Seek Bar ----------------------------------
-    protected void addSnappingSeekBarToUI() {
-        UiUtils.waitForLayoutPrepared(this, new UiUtils.LayoutPreparedListener() { //TODO:  for debug
-            @Override
-            public void onLayoutPrepared(final View preparedView) {
-                initSeekBar();
-                initIndicators();
-            }
-        });
-    }
-
     protected void initSeekBar() {
-        if (mSeekBar != null) return;
+        removeView(mSeekBar);
         final LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (mQuestion != null) params.addRule(RelativeLayout.BELOW, mQuestion.getId());
-
-        mSeekBar = new SeekBar(mContext);
+        mSeekBar = new AppCompatSeekBar(getContext());
         mSeekBar.setOnSeekBarChangeListener(this);
-//        mSeekBar.setLayoutParams(params);
         mSeekBar.setMax(100 * refine);
-        setDrawablesToSeekBar();
-
-        if (seekbarPadding != null)
-            mSeekBar.setPadding(seekbarPadding[0], seekbarPadding[1], seekbarPadding[2], seekbarPadding[3]);
-        if (seekbarMargin != null)
-            params.setMargins(seekbarMargin[0], seekbarMargin[1], seekbarMargin[2], seekbarMargin[3]);
         addView(mSeekBar, params);
     }
 
@@ -413,7 +234,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         final float seekBarWidthWithoutThumbOffset = seekBarWidth - getThumbnailWidth();
 
         final LayoutParams indicatorParams = new LayoutParams(Math.round(indicatorSize), Math.round(indicatorSize));
-        if (mQuestion != null) indicatorParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
         indicatorParams.leftMargin = Math.round(seekBarWidthWithoutThumbOffset / 100 * index * sectionFactor + (getThumbnailWidth() / 2 - indicatorSize / 2));
         indicatorParams.topMargin = thumbDrawable.getIntrinsicHeight() / 2 - Math.round(indicatorSize / 2);
 
@@ -435,7 +255,8 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         final View indicator = new View(mContext);
 
         checkIndicatorDrawable(index);
-        indicator.setBackgroundResource(indicatorDrawableId);
+        Drawable drawable = getResources().getDrawable(indicatorDrawableId);
+        indicator.setBackgroundDrawable(drawable);
         UiUtils.setColor(indicator.getBackground(), indicatorColor);
 
         return indicator;
@@ -485,30 +306,22 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         final float sectionFactor = SeekbarUtils.sectionFactor(indicatorCount);
         final float seekBarWidthWithoutThumbOffset = completeSeekBarWidth - thumbnailWidth;
         final LayoutParams textParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (mQuestion != null) textParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
 
         final int numberLeftMargin = Math.round(seekBarWidthWithoutThumbOffset / 100 * index * sectionFactor + thumbnailWidth / 2);
-
+        final int numberTopMargin = Math.round((thumbDrawable.getIntrinsicHeight() / 2 - Math.round(indicatorSize / 2)) + indicatorTextMarginTop);
         checkIndicatorText(index);
-        View view = createIndicatorText(index);
-        textParams.setMargins(indicatorTextMargin[0], indicatorTextMargin[1], indicatorTextMargin[2], indicatorTextMargin[3]);
+        AppCompatTextView view = createIndicatorText(index);
+        textParams.topMargin = numberTopMargin;
         addView(view, textParams);
         indicatorTextList.add(view);
         UiUtils.waitForLayoutPrepared(view, createTextIndicatorLayoutPreparedListener(numberLeftMargin));
-
-        if (index == indicatorCount - 1) view.post(new Runnable() {
-            @Override
-            public void run() {
-                addBoundsText();
-            }
-        });
     }
 
-    protected View createIndicatorText(int index) {
-        final TextView textIndicator = new TextView(mContext);
+    protected AppCompatTextView createIndicatorText(int index) {
+        final AppCompatTextView textIndicator = new AppCompatTextView(mContext);
         textIndicator.setText(seekBarElementList != null && seekBarElementList.size() > 0 ?
                 seekBarElementList.get(index).getIndicatorText() : indicatorItems[index]);
-        textIndicator.setTextSize(indicatorTextSize / mDensity);
+        textIndicator.setTextSize(TypedValue.COMPLEX_UNIT_SP, indicatorTextSize / mDensity);
         textIndicator.setTextColor(indicatorTextColor);
 
         return textIndicator;
@@ -528,40 +341,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         };
     }
 
-    // Bounds Text----------------------------------------------------------------------------------
-    protected void addBoundsText() {
-        removeTextView();
-        if ((boundTextStart == null || boundTextStart.isEmpty()) && (boundTextEnd == null || boundTextEnd.isEmpty()))
-            return;
-        int bound = UiUtils.getXPositionOfView(indicatorList.get(boundViewLength));
-
-        if (mBoundTextStart == null) mBoundTextStart = new AppCompatTextView(getContext());
-        addTextView(mBoundTextStart, bound, boundTextStart, RelativeLayout.ALIGN_PARENT_LEFT);
-        if (mBoundTextEnd == null) mBoundTextEnd = new AppCompatTextView(getContext());
-        addTextView(mBoundTextEnd, bound, boundTextEnd, RelativeLayout.ALIGN_PARENT_RIGHT);
-    }
-
-    protected void removeTextView() {
-        removeView(mBoundTextStart);
-        removeView(mBoundTextEnd);
-    }
-
-    protected void addTextView(AppCompatTextView textBound, int bound, String text, int verb) {
-        final LayoutParams textParams = new LayoutParams(bound, ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (mQuestion != null) textParams.addRule(RelativeLayout.BELOW, mQuestion.getId());
-        textBound.setText(text);
-        textBound.setTextSize(boundTextSize / mDensity);
-        textBound.setTextColor(boundTextColor);
-//        textBound.setBackgroundColor(ContextCompat.getColor(getContext(), R.color.yellow));
-        textBound.setGravity(verb == RelativeLayout.ALIGN_PARENT_RIGHT ? Gravity.END : Gravity.START);
-
-        if (boundTextMargin != null) {
-            int topMargin = indicatorTextMargin[1] + Math.round(boundTextSize) + UiUtils.getDPinPixel(getContext(), boundTextMargin[1]);
-            textParams.setMargins(boundTextMargin[0], topMargin, boundTextMargin[2], boundTextMargin[3]);
-        }
-        textParams.addRule(verb);
-        addView(textBound, textParams);
-    }
 
     protected boolean checkIndicatorText(int index) {
         if (seekBarElementList == null || seekBarElementList.size() < 1) return false;
@@ -625,11 +404,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         return mSeekBar.getProgress();
     }
 
-    public void setProgress(final int progress) {
-        toProgress = progress;
-        handleSnapToClosestValue(true);
-    }
-
     protected float getProgressForIndex(final int index) {
         final float sectionLength = 100 / (indicatorCount - 1);
         return index * sectionLength;
@@ -644,63 +418,17 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         return thumbDrawable.getIntrinsicWidth();
     }
 
-    // Setters -------------------------------------------------------------------------------------
-    // Question -------------------------------------------
-    public SnappingSeekBar setQuestion(String question) {
-        this.question = question;
-        return this;
+    private int getIndicatorTextTopMargin() {
+        if (indicatorTextList == null || indicatorTextList.size() == 0) return 0;
+        AppCompatTextView tv = indicatorTextList.get(0);
+        RelativeLayout.LayoutParams params = (LayoutParams) tv.getLayoutParams();
+        return params.topMargin;
     }
 
-    public SnappingSeekBar setQuestionPadding(float[] padding) {
-        return setQuestionPadding(padding[0], padding[1], padding[2], padding[3]);
-    }
-
-    public SnappingSeekBar setQuestionPadding(float padding) {
-        return setQuestionPadding(padding, padding, padding, padding);
-    }
-
-    public SnappingSeekBar setQuestionPadding(float paddingLeft, float paddingTop, float paddingRight, float paddingBottom) {
-        questionPadding = new int[]{
-                UiUtils.getDPinPixel(getContext(), paddingLeft),
-                UiUtils.getDPinPixel(getContext(), paddingTop),
-                UiUtils.getDPinPixel(getContext(), paddingRight),
-                UiUtils.getDPinPixel(getContext(), paddingBottom)
-        };
-        return this;
-    }
-
-    public SnappingSeekBar setQuestionMargin(float margin) {
-        return setQuestionMargin(margin, margin, margin, margin);
-    }
-
-    public SnappingSeekBar setQuestionMargin(float marginLeft, float marginTop, float marginRight, float marginBottom) {
-        questionMargin = new int[]{
-                UiUtils.getDPinPixel(getContext(), marginLeft),
-                UiUtils.getDPinPixel(getContext(), marginTop),
-                UiUtils.getDPinPixel(getContext(), marginRight),
-                UiUtils.getDPinPixel(getContext(), marginBottom)
-        };
-        return this;
-    }
-
-    public SnappingSeekBar setQuestionColor(int questionColor) {
-        this.questionColor = questionColor;
-        return this;
-    }
-
-    public SnappingSeekBar setQuestionTextSize(float questionTextSize) {
-        this.questionTextSize = questionTextSize;
-        return this;
-    }
-
-    public SnappingSeekBar setQuestionGravity(int questionGravity) {
-        this.questionGravity = questionGravity;
-        return this;
-    }
-
+    // Setters ------------------------------------------------------------------------------------
     // SeekBar ---------------------------------------------
     public SnappingSeekBar setSeekbarColor(int seekbarColor) {
-        this.seekbarColor = seekbarColor;
+        mSeekBar.setBackgroundColor(seekbarColor);
         return this;
     }
 
@@ -713,12 +441,12 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar setSeekBarPadding(float paddingLeft, float paddingTop, float paddingRight, float paddingBottom) {
-        this.seekbarPadding = new int[]{
+        mSeekBar.setPadding(
                 UiUtils.getDPinPixel(getContext(), paddingLeft),
                 UiUtils.getDPinPixel(getContext(), paddingTop),
                 UiUtils.getDPinPixel(getContext(), paddingRight),
                 UiUtils.getDPinPixel(getContext(), paddingBottom)
-        };
+        );
         return this;
     }
 
@@ -731,12 +459,13 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar setSeekBarMargin(float marginLeft, float marginTop, float marginRight, float marginBottom) {
-        this.seekbarMargin = new int[]{
+        RelativeLayout.LayoutParams params = (LayoutParams) mSeekBar.getLayoutParams();
+        params.setMargins(
                 UiUtils.getDPinPixel(getContext(), marginLeft),
                 UiUtils.getDPinPixel(getContext(), marginTop),
                 UiUtils.getDPinPixel(getContext(), marginRight),
                 UiUtils.getDPinPixel(getContext(), marginBottom)
-        };
+        );
         return this;
     }
 
@@ -751,8 +480,8 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         return this;
     }
 
-    public SnappingSeekBar setIndicatorSize(final int indicatorSize) {
-        this.indicatorSize = mDensity * indicatorSize;
+    private SnappingSeekBar setIndicatorSize(final float indicatorSize) {
+        this.indicatorSize = indicatorSize;
         return this;
     }
 
@@ -761,37 +490,35 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         return this;
     }
 
-    private void setIndicatorTextMargin(float[] margin) {
-        indicatorTextMargin = new int[]{
-                (int) margin[0],
-                (int) margin[1],
-                (int) margin[2],
-                (int) margin[3]
-        };
-    }
-
     public SnappingSeekBar setIndicatorTextMargin(float margin) {
         return setIndicatorTextMargin(margin, margin, margin, margin);
     }
 
     public SnappingSeekBar setIndicatorTextMargin(float marginLeft, float marginTop, float marginRight, float marginBottom) {
-        indicatorTextMargin = new int[]{
-                UiUtils.getDPinPixel(getContext(), marginLeft),
-                UiUtils.getDPinPixel(getContext(), marginTop),
-                UiUtils.getDPinPixel(getContext(), marginRight),
-                UiUtils.getDPinPixel(getContext(), marginBottom)
-        };
+        for (AppCompatTextView tv : indicatorTextList) {
+            RelativeLayout.LayoutParams params = (LayoutParams) tv.getLayoutParams();
+            params.setMargins(UiUtils.getDPinPixel(getContext(), marginLeft),
+                    UiUtils.getDPinPixel(getContext(), marginTop),
+                    UiUtils.getDPinPixel(getContext(), marginRight),
+                    UiUtils.getDPinPixel(getContext(), marginBottom));
+        }
         return this;
     }
 
-    public SnappingSeekBar setIndicatorTextSize(final int textSize) {
-        indicatorTextSize = mDensity * textSize;
+    private SnappingSeekBar setIndicatorTextSize(final float textSize) {
+        this.indicatorTextSize = textSize;
         return this;
     }
 
     // Progress --------------------------------------------
+    public void setProgress(final int progress) {
+        toProgress = progress;
+        handleSnapToClosestValue(true);
+    }
+
     public SnappingSeekBar setProgressBaseDrawable(int progressBaseDrawable) {
-        this.progressBaseDrawable = progressBaseDrawable;
+        progressDrawable = getResources().getDrawable(progressBaseDrawable);
+        mSeekBar.setProgressDrawable(progressDrawable);
         return this;
     }
 
@@ -810,57 +537,22 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar setProgressColor(final int progressColor) {
-        this.progressColor = progressColor;
+        UiUtils.setColor(progressDrawable, progressColor);
         return this;
     }
 
     // Thumbnail --------------------------------------------
     public SnappingSeekBar setThumbDrawable(final int thumbDrawableId) {
-        this.thumbDrawableId = thumbDrawableId;
+        thumbDrawable = getResources().getDrawable(thumbDrawableId);
+        mSeekBar.setThumb(thumbDrawable);
+
+        final int thumbnailWidth = thumbDrawable.getIntrinsicWidth();
+        mSeekBar.setPadding(thumbnailWidth / 2, 0, thumbnailWidth / 2, 0);
         return this;
     }
 
     public SnappingSeekBar setThumbnailColor(final int thumbnailColor) {
-        this.thumbnailColor = thumbnailColor;
-        return this;
-    }
-
-    // Bound Text --------------------------------------------
-    public SnappingSeekBar setBoundTextStart(String boundTextStart) {
-        this.boundTextStart = boundTextStart;
-        return this;
-    }
-
-    public SnappingSeekBar setBoundTextEnd(String boundTextEnd) {
-        this.boundTextEnd = boundTextEnd;
-        return this;
-    }
-
-    public SnappingSeekBar setBoundTextMargin(float[] margin) {
-        return setBoundTextMargin(margin[0], margin[1], margin[2], margin[3]);
-    }
-
-    public SnappingSeekBar setBoundTextMargin(float margin) {
-        return setBoundTextMargin(margin, margin, margin, margin);
-    }
-
-    public SnappingSeekBar setBoundTextMargin(float marginLeft, float marginTop, float marginRight, float marginBottom) {
-        this.boundTextMargin = new int[]{
-                UiUtils.getDPinPixel(getContext(), marginLeft),
-                UiUtils.getDPinPixel(getContext(), marginTop),
-                UiUtils.getDPinPixel(getContext(), marginRight),
-                UiUtils.getDPinPixel(getContext(), marginBottom)
-        };
-        return this;
-    }
-
-    public SnappingSeekBar setBoundTextColor(int boundTextColor) {
-        this.boundTextColor = boundTextColor;
-        return this;
-    }
-
-    public SnappingSeekBar setBoundViewLength(int boundViewLength) {
-        this.boundViewLength = boundViewLength;
+        UiUtils.setColor(thumbDrawable, thumbnailColor);
         return this;
     }
 
@@ -870,7 +562,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
         this.seekBarElementList = list;
         indicatorCount = list.size();
-
+        initIndicators();
         return this;
     }
 

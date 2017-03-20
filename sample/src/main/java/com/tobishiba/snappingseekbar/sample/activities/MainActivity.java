@@ -1,10 +1,8 @@
 package com.tobishiba.snappingseekbar.sample.activities;
 
 import android.app.Activity;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -61,27 +59,11 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "5", ContextCompat.getColor(this, R.color.green_darker)));
         elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.green_darker)));
 
-        final Resources resources = getResources();
-        //final SnappingSeekBar snappingSeekBar = new SnappingSeekBar(this)
         snappingSeekBar.setItems(elements)
-                .setQuestionGravity(Gravity.START)
-                .setQuestion("Really hard question")
-                .setQuestionColor(colorBlack)
-                .setQuestionTextSize(17)
-                .setQuestionPadding(0, 10, 0, 10)
-
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
-                .setIndicatorTextSize(14)
-                .setIndicatorSize(14)
-                .setBoundTextStart("low")
-                .setBoundTextEnd("hight")
-                .setBoundTextMargin(0, 5, 0, 0)
-                .setBoundViewLength(3)
-                .setBoundTextColor(colorBlack)
-                .setOnItemSelectionListener(this)
-                .build();
+                .setOnItemSelectionListener(this);
 
         UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListener() {
             @Override

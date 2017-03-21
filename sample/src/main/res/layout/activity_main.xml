@@ -16,12 +16,6 @@
         android:orientation="vertical">
 
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
-            android:id="@+id/snapp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_without_texts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -36,6 +30,20 @@
             android:layout_height="wrap_content"
             app:indicatorTextArrayId="@array/seek_bar_with_numbers_items"
             app:progressColor="@color/yellow_light"/>
+
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/snapp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorTextMarginBottom="5dp"
+            />
+
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/snapp_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorTextMarginBottom="5dp"
+            />
 
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_strings"

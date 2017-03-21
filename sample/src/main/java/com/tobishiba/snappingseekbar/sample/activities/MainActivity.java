@@ -26,7 +26,9 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
     private LinearLayout layout;
     private List<SeekbarElement> elements;
+    private List<SeekbarElement> elements2;
     private SnappingSeekBar snappingSeekBar;
+    private SnappingSeekBar snappingSeekBar2;
 
     private int colorBlack;
     private int colorRed;
@@ -39,9 +41,11 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
 
         layout = (LinearLayout) findViewById(R.id.activity_main_layout);
         snappingSeekBar = (SnappingSeekBar) findViewById(R.id.snapp);
+        snappingSeekBar2 = (SnappingSeekBar) findViewById(R.id.snapp_2);
 
         init();
-        createSnappingSeekBarProgrammaticallyFromList();
+        snappingSeekBarFromList();
+        snappingSeekBarFromList_2();
     }
 
     private void init(){
@@ -50,14 +54,15 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
         colorGrey = ContextCompat.getColor(this, R.color.grey);
     }
 
-    private void createSnappingSeekBarProgrammaticallyFromList() {
+    private void snappingSeekBarFromList() {
         elements = new ArrayList<>();
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "1", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), ContextCompat.getColor(this, R.color.red), "2", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "3", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), ContextCompat.getColor(this, R.color.red), "4", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "5", ContextCompat.getColor(this, R.color.green_darker)));
-        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.green_darker)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "1", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "2", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "3", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "4", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "5", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.blue)));
+        elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "7", ContextCompat.getColor(this, R.color.blue)));
 
         snappingSeekBar.setItems(elements)
                 .setProgressBaseDrawable(R.drawable.progress)
@@ -71,8 +76,29 @@ public class MainActivity extends Activity implements SnappingSeekBar.OnItemSele
                 snappingSeekBar.setProgressToIndex(2);
             }
         });
+    }
 
-//        layout.addView(snappingSeekBar);
+    private void snappingSeekBarFromList_2() {
+        elements2 = new ArrayList<>();
+        elements2.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.blue), "1", ContextCompat.getColor(this, R.color.green_darker)));
+        elements2.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.green), "2", ContextCompat.getColor(this, R.color.green_darker)));
+        elements2.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), "3", ContextCompat.getColor(this, R.color.green_darker)));
+        elements2.add(new SeekbarElement(R.drawable.rect_background, ContextCompat.getColor(this, R.color.green), "4", ContextCompat.getColor(this, R.color.green_darker)));
+        elements2.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "5", ContextCompat.getColor(this, R.color.green_darker)));
+        elements2.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), "6", ContextCompat.getColor(this, R.color.green_darker)));
+
+        snappingSeekBar2.setItems(elements2)
+                .setProgressBaseDrawable(R.drawable.progress)
+                .setProgressColor(colorRed)
+                .setThumbnailColor(colorRed)
+                .setOnItemSelectionListener(this);
+
+        UiUtils.waitForLayoutPrepared(snappingSeekBar2, new UiUtils.LayoutPreparedListener() {
+            @Override
+            public void onLayoutPrepared(final View preparedView) {
+                snappingSeekBar2.setProgressToIndex(2);
+            }
+        });
     }
 
     @Override

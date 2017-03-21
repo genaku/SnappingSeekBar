@@ -49,7 +49,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected int indicatorDrawableId;
 
     protected int indicatorTextColor;
-    protected float indicatorTextMarginTop;
+    protected float[] indicatorTextMargin = new float[4];
     protected String[] indicatorItems = new String[0];
     protected float indicatorTextSize;
 
@@ -88,7 +88,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         setIndicatorTextMargin(0, Math.round(35 * mDensity), 0, 0);
         setIndicatorTextSize(12 * mDensity);
         setIndicatorSize(11.3f * mDensity);
-        indicatorTextMarginTop = 15 * mDensity;
+        indicatorTextMargin[1] = 15 * mDensity;
 
         setProgressColor(ContextCompat.getColor(getContext(), R.color.black));
         setIndicatorColor(ContextCompat.getColor(getContext(), R.color.blue));
@@ -113,7 +113,6 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         try {
             initThumb(typedArray);
             initIndicator(typedArray);
-            initSeekbar(typedArray);
             initProgress(typedArray);
         } finally {
             typedArray.recycle();
@@ -138,36 +137,11 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         if (itemsArrayId > 0) setItems(itemsArrayId);
         else setItemsAmount(typedArray.getInteger(R.styleable.SnappingSeekBar_indicatorAmount, 0));
 
-        setIndicatorTextMargin(
-                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, Math.round(30 * mDensity)),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginEnd, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginBottom, 0)
-        );
+        indicatorTextMargin[1] = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginTop, 15 * mDensity);
+        indicatorTextMargin[3] = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMarginBottom, 0);
+
         float margin = typedArray.getDimension(R.styleable.SnappingSeekBar_indicatorTextMargin, -1);
         if (margin != -1) setIndicatorTextMargin(margin);
-        indicatorTextMarginTop = 15 * mDensity;
-    }
-
-    protected void initSeekbar(final TypedArray typedArray) {
-
-        setSeekBarPadding(
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingStart, mSeekBar.getPaddingLeft() / mDensity), //Math.round(6 * mDensity)
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingEnd, mSeekBar.getPaddingRight() / mDensity), //Math.round(6 * mDensity)
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPaddingBottom, 0));
-
-        float seekbarPadding = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarPadding, -1);
-        if (seekbarPadding != -1) setSeekBarPadding(seekbarPadding);
-
-
-        setSeekBarMargin(
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginStart, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginTop, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginEnd, 0),
-                typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMarginBottom, 0));
-        float seekbarMargin = typedArray.getDimension(R.styleable.SnappingSeekBar_seekbarMargin, -1);
-        if (seekbarMargin != -1) setSeekBarMargin(seekbarMargin);
     }
 
     protected void initProgress(final TypedArray typedArray) {
@@ -267,7 +241,7 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
 
         SeekbarElement element = seekBarElementList.get(index);
         indicatorDrawableId = element.getIndicatorDrawableId();
-        if (element.getIndicatorReachedColor() == -1 || toProgress >= indicatorList.size() * (100 / indicatorCount))
+        if (element.getIndicatorReachedColor() != -1 && toProgress >= indicatorList.size() * (100 / indicatorCount))
             indicatorColor = element.getIndicatorReachedColor();
         else indicatorColor = element.getIndicatorColor();
 
@@ -289,7 +263,9 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     protected void changeIndicatorColor(int reach, int from, boolean back) {
         for (int i = from; i <= reach; i++) {
             View view = indicatorList.get(i);
-            int color = back ? seekBarElementList.get(i).getIndicatorColor() : seekBarElementList.get(i).getIndicatorReachedColor();
+            SeekbarElement element = seekBarElementList.get(i);
+            if (element.getIndicatorReachedColor() == -1) return;
+            int color = back ? element.getIndicatorColor() : element.getIndicatorReachedColor();
             UiUtils.setColor(view.getBackground(), color);
         }
 
@@ -308,9 +284,14 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
         final LayoutParams textParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         final int numberLeftMargin = Math.round(seekBarWidthWithoutThumbOffset / 100 * index * sectionFactor + thumbnailWidth / 2);
-        final int numberTopMargin = Math.round((thumbDrawable.getIntrinsicHeight() / 2 - Math.round(indicatorSize / 2)) + indicatorTextMarginTop);
+        final int numberTopMargin = Math.round((thumbDrawable.getIntrinsicHeight() / 2 - Math.round(indicatorSize / 2)) + indicatorTextMargin[1]);
         checkIndicatorText(index);
         AppCompatTextView view = createIndicatorText(index);
+        textParams.setMargins(
+                UiUtils.getDPinPixel(getContext(), indicatorTextMargin[0]),
+                numberTopMargin,
+                UiUtils.getDPinPixel(getContext(), indicatorTextMargin[2]),
+                UiUtils.getDPinPixel(getContext(), indicatorTextMargin[3]));
         textParams.topMargin = numberTopMargin;
         addView(view, textParams);
         indicatorTextList.add(view);
@@ -495,13 +476,10 @@ public class SnappingSeekBar extends RelativeLayout implements SeekBar.OnSeekBar
     }
 
     public SnappingSeekBar setIndicatorTextMargin(float marginLeft, float marginTop, float marginRight, float marginBottom) {
-        for (AppCompatTextView tv : indicatorTextList) {
-            RelativeLayout.LayoutParams params = (LayoutParams) tv.getLayoutParams();
-            params.setMargins(UiUtils.getDPinPixel(getContext(), marginLeft),
-                    UiUtils.getDPinPixel(getContext(), marginTop),
-                    UiUtils.getDPinPixel(getContext(), marginRight),
-                    UiUtils.getDPinPixel(getContext(), marginBottom));
-        }
+        indicatorTextMargin[0] = marginLeft;
+        indicatorTextMargin[1] = marginTop;
+        indicatorTextMargin[2] = marginRight;
+        indicatorTextMargin[3] = marginBottom;
         return this;
     }
 

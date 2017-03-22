@@ -87,6 +87,23 @@ UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListene
 ```
 
  </br>
+ 
+##Dependency
+Step 1. Add the JitPack repository to your build file
+```groovy
+allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+Step 2. Add the dependency
+```groovy
+dependencies {
+		compile 'com.github.jozsefmezei:SnappingSeekBar:1.0.1'
+	}
+```
 
 ##Developed by
 * Tobias Buchholz - <tobias.buchholz89@gmail.com>

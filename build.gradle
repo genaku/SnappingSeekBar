@@ -6,6 +6,7 @@ buildscript {
         jcenter()
     }
     dependencies {
+//        compile 'com.github.jozsimezei:SnappingSeekBar:1.0.1'
         classpath 'com.android.tools.build:gradle:2.2.2'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -15,6 +16,7 @@ buildscript {
 
 allprojects {
     repositories {
+        maven { url 'https://jitpack.io' }
         mavenCentral()
         jcenter()
     }

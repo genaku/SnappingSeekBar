@@ -83,5 +83,10 @@
             app:indicatorTextSize="18sp"
             app:progressColor="@color/magenta"/>
 
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/gj"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorAmount="5"/>
     </LinearLayout>
 </ScrollView>

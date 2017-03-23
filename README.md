@@ -3,26 +3,26 @@ SnappingSeekBar
  
 This is a sample app which contains my implementation of a snapping seek bar. If you build the project you can see some different seek bar examples which are all attached to the same OnItemSelectionListener.
  
-##Video
-![](https://github.com/jozsefmezei/SnappingSeekBar/master/sample.gif)
+## Video
+![](https://github.com/jozsefmezei/SnappingSeekBar/sample.gif)
 
 
-##Features
+## Features
  - updated project
  - reached indicators have other colors
  - indicators can represent themselves by different drawables
  - added SeekbarElement model
  - simplify code
  
-##Fixed issues
+## Fixed issues
  - indicators have bad positions
  - thumb has bad positions
  - SnappingSeekBar has to build itself again
  - other bugs
  
-##Usage
+## Usage
  
-####In xml use the following attributes:
+#### In xml use the following attributes:
 
 ```xml
 <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
@@ -52,8 +52,8 @@ Most of the attributes have a default value, so the minimum setup looks like the
 ```
 
 </br>
-####From code it could look like this:
-``` java
+#### From code it could look like this:
+```java
 //Find view
  snappingSeekBar = (SnappingSeekBar) findViewById(R.id.snapp);
  ...
@@ -88,8 +88,8 @@ UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListene
 
  </br>
  
-##Dependency
-Step 1. Add the JitPack repository to your build file
+## Dependency
+#### Step 1. Add the JitPack repository to your build file
 ```groovy
 allprojects {
 		repositories {
@@ -98,18 +98,18 @@ allprojects {
 		}
 	}
 ```
-Step 2. Add the dependency
+#### Step 2. Add the dependency
 ```groovy
 dependencies {
 		compile 'com.github.jozsefmezei:SnappingSeekBar:1.0.1'
 	}
 ```
 
-##Developed by
+## Developed by
 * Tobias Buchholz - <tobias.buchholz89@gmail.com>
 * upgraded by József Mezei
 
-##License
+## License
 
     Copyright 2014 Tobias Buchholz
    

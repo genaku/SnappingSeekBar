@@ -49,7 +49,6 @@ Most of the attributes have a default value, so the minimum setup looks like the
     app:indicatorAmount="5"/>
 ```
 
-</br>
 #### From code it could look like this:
 
 ```java
@@ -86,10 +85,9 @@ UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListene
              }
          });
 ```
- </br>
  
 ## Dependency
-#### Step 1. Add the JitPack repository to your build file
+#### Step 1.) Add the JitPack repository to your build file
 ```groovy
 allprojects {
 		repositories {
@@ -98,7 +96,7 @@ allprojects {
 		}
 	}
 ```
-#### Step 2. Add the dependency
+#### Step 2.) Add the dependency
 ```groovy
 dependencies {
 		compile 'com.github.jozsefmezei:SnappingSeekBar:1.0.1'

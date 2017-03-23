@@ -3,8 +3,8 @@ SnappingSeekBar
  
 This is a sample app which contains my implementation of a snapping seek bar. If you build the project you can see some different seek bar examples which are all attached to the same OnItemSelectionListener.
  
-## Video
-![](https://github.com/jozsefmezei/SnappingSeekBar/sample.gif)
+## Demo
+![](https://github.com/jozsefmezei/SnappingSeekBar/blob/master/sample.gif)
 
 
 ## Features
@@ -39,8 +39,6 @@ This is a sample app which contains my implementation of a snapping seek bar. If
     app:itemsArrayId="@array/seek_bar_with_big_indicators_items"/> 
 ```
 
-</br>
-</br>
 Most of the attributes have a default value, so the minimum setup looks like the following:
 
 ```xml
@@ -53,11 +51,12 @@ Most of the attributes have a default value, so the minimum setup looks like the
 
 </br>
 #### From code it could look like this:
+
 ```java
-//Find view
+ //1. find view
  snappingSeekBar = (SnappingSeekBar) findViewById(R.id.snapp);
- ...
- 
+
+ //2. create element list
  private void snappingSeekBarFromList() {
         // Create list with: indicator drawable, indicator color, reached indicator color, indicator text, indicator text color 
          elements = new ArrayList<>();
@@ -67,16 +66,17 @@ Most of the attributes have a default value, so the minimum setup looks like the
          elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "4", ContextCompat.getColor(this, R.color.blue)));
          elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "5", ContextCompat.getColor(this, R.color.blue)));
          elements.add(new SeekbarElement(R.drawable.circle_background_small, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "6", ContextCompat.getColor(this, R.color.blue)));
-         elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "7", ContextCompat.getColor(this, R.color.blue)));
- 
-         snappingSeekBar.setItems(elements)
+         elements.add(new SeekbarElement(R.drawable.circle_background, ContextCompat.getColor(this, R.color.blue), ContextCompat.getColor(this, R.color.red), "7", ContextCompat.getColor(this, R.color.blue)));  
+
+ //3. set elements
+    snappingSeekBar.setItems(elements)
                  .setProgressBaseDrawable(R.drawable.progress)
                  .setProgressColor(colorRed)
                  .setThumbnailColor(colorRed)
-                 .setOnItemSelectionListener(this);
-     }
-```
-Set start position: 
+                 .setOnItemSelectionListener(this); 
+```        
+         
+#### Set start position
 ```java
 UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListener() {
              @Override
@@ -85,7 +85,6 @@ UiUtils.waitForLayoutPrepared(snappingSeekBar, new UiUtils.LayoutPreparedListene
              }
          });
 ```
-
  </br>
  
 ## Dependency

@@ -4,8 +4,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
   <style name="SeekBarAppTheme" parent="android:Widget.Holo.Light.SeekBar">
-      <item name="android:progressDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
-      <item name="android:indeterminateDrawable">@drawable/apptheme_scrubber_progress_horizontal_holo_light</item>
+      <item name="android:progressDrawable">@drawable/progress</item>
+      <item name="android:indeterminateDrawable">@drawable/progress</item>
       <item name="android:thumb">@drawable/apptheme_scrubber_control_selector_holo_light</item>
   </style>
 

@@ -4,11 +4,27 @@
 /.openshift
 /build
 
+/gen/
+/app_icon.psd
+/SnappingSeekBarSample.iml
+
+# Built application files
+*.apk
+*.ap_
+
+# Files for the Dalvik VM
+*.dex
+
+# Generated files
+bin/
+gen
+
 ## remove other files
 /captures
 *.log
-/local.properties
 .DS_Store
 
 ## remove all *.iml
 *.iml
+
+/.idea/workspace.xml

@@ -1,77 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:background="@color/grey">
-    <LinearLayout android:id="@+id/activity_main_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:layout_gravity="center"
+            android:background="@color/white">
+
+    <LinearLayout
+        android:id="@+id/activity_main_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:gravity="center"
-        android:paddingTop="20dp"
-        android:paddingBottom="20dp"
-        android:paddingLeft="@dimen/layout_padding"
-        android:paddingRight="@dimen/layout_padding">
-        <TextView android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="@string/app_description"
-            android:textColor="@color/white"
-            android:lineSpacingExtra="2dp"
-            android:gravity="center_horizontal"
-            style="@style/Roboto.Normal"/>
+        android:orientation="vertical">
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_without_texts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:itemsAmount="5"/>
+            app:indicatorAmount="7"
+            app:indicatorSize="11.3dp"
+            />
+
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_numbers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:progressColor="@color/yellow_light"
-            app:itemsArrayId="@array/seek_bar_with_numbers_items"/>
+            app:indicatorTextArrayId="@array/seek_bar_with_numbers_items"
+            app:progressColor="@color/yellow_light"/>
+
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/snapp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorTextMarginBottom="5dp"
+            />
+
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/snapp_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorTextMarginBottom="5dp"
+            />
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_strings"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:progressColor="@color/red_light"
-            app:itemsArrayId="@array/seek_bar_with_strings_items"/>
+            app:indicatorTextArrayId="@array/seek_bar_with_strings_items"
+            app:progressColor="@color/red_light"/>
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_different_colors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:progressColor="@color/green"
-            app:thumbnailColor="@color/red_light"
             app:indicatorColor="@color/yellow_light"
-            app:textIndicatorColor="@color/blue_darker"
-            app:itemsArrayId="@array/seek_bar_with_different_colors_items"/>
+            app:indicatorTextArrayId="@array/seek_bar_with_different_colors_items"
+            app:indicatorTextColor="@color/blue_darker"
+            app:progressColor="@color/green"
+            app:thumbnailColor="@color/red_light"/>
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_different_drawables"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:textIndicatorTopMargin="50dp"
+            android:clipChildren="false"
+            android:clipToPadding="false"
             app:indicatorDrawable="@drawable/rect_background"
-            app:thumb="@drawable/apptheme_scrubber_control_selector_alternative"
+            app:indicatorTextArrayId="@array/seek_bar_with_different_drawables_items"
+            app:indicatorTextMarginTop="20dp"
             app:progressColor="@color/blue"
-            app:itemsArrayId="@array/seek_bar_with_different_drawables_items"/>
+            app:thumbDrawable="@drawable/apptheme_scrubber_control_selector_alternative"/>
+
         <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
             android:id="@+id/activity_main_seek_bar_with_big_indicators"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            app:progressColor="@color/magenta"
-            app:textSize="18dp"
             app:indicatorSize="18dp"
-            app:itemsArrayId="@array/seek_bar_with_big_indicators_items"/>
+            app:indicatorTextArrayId="@array/seek_bar_with_big_indicators_items"
+            app:indicatorTextSize="18sp"
+            app:progressColor="@color/magenta"/>
+
+        <hu.mesys.snappingseekbar.library.views.SnappingSeekBar
+            android:id="@+id/gj"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:indicatorAmount="5"/>
     </LinearLayout>
 </ScrollView>

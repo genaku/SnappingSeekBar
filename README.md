@@ -4,7 +4,7 @@ SnappingSeekBar
 This is a sample app which contains my implementation of a snapping seek bar. If you build the project you can see some different seek bar examples which are all attached to the same OnItemSelectionListener.
  
 ## Demo
-![](https://github.com/jozsefmezei/SnappingSeekBar/blob/master/sample.gif)
+<img src="https://github.com/jozsefmezei/SnappingSeekBar/blob/master/sample.gif" width="175" />
 
 
 ## Features
@@ -74,6 +74,7 @@ Most of the attributes have a default value, so the minimum setup looks like the
                  .setProgressColor(colorRed)
                  .setThumbnailColor(colorRed)
                  .setOnItemSelectionListener(this); 
+                 }
 ```        
          
 #### Set start position

@@ -4,7 +4,7 @@ SnappingSeekBar
 This is a sample app which contains my implementation of a snapping seek bar. If you build the project you can see some different seek bar examples which are all attached to the same OnItemSelectionListener.
  
 ## Demo
-<img src="https://github.com/jozsefmezei/SnappingSeekBar/blob/master/sample.gif" width="175" />
+<img src="https://github.com/jozsefmezei/SnappingSeekBar/blob/master/sample.gif" width="230"/>
 
 
 ## Features

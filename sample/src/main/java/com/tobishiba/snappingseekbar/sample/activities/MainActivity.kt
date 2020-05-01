@@ -2,10 +2,10 @@ package com.tobishiba.snappingseekbar.sample.activities
 
 import android.app.Activity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.tobishiba.snappingseekbar.R
 import hu.mesys.snappingseekbar.library.models.SeekBarElement
 import hu.mesys.snappingseekbar.library.utils.UiUtils.LayoutPreparedListener

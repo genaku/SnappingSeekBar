@@ -5,9 +5,6 @@ import android.content.res.TypedArray
 import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.AppCompatSeekBar
-import android.support.v7.widget.AppCompatTextView
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.View
@@ -15,6 +12,9 @@ import android.view.ViewGroup
 import android.widget.RelativeLayout
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
+import androidx.appcompat.widget.AppCompatSeekBar
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import hu.mesys.snappingseekbar.R
 import hu.mesys.snappingseekbar.library.models.SeekBarElement
 import hu.mesys.snappingseekbar.library.utils.UiUtils.LayoutPreparedListener

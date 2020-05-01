@@ -1,3 +1,6 @@
+[![](https://jitpack.io/v/genaku/SnappingSeekBar.svg)](https://jitpack.io/#genaku/SnappingSeekBar)
+
+
 SnappingSeekBar
 ===============
  
@@ -99,13 +102,14 @@ allprojects {
 #### Step 2.) Add the dependency
 ```groovy
 dependencies {
-		compile 'com.github.jozsefmezei:SnappingSeekBar:1.0.1'
+		implementation 'com.github.genaku:SnappingSeekBar:1.0.2'
 	}
 ```
 
 ## Developed by
 * Tobias Buchholz - <tobias.buchholz89@gmail.com>
 * upgraded by József Mezei
+* migrated to Kotlin, refactored, optimized and upgraded by Gena Kuchergin
 
 ## License
 

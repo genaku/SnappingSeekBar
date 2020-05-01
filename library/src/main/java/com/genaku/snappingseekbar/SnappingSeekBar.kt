@@ -418,7 +418,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         return this
     }
 
-    private fun setSeekBarPadding(padding: FloatArray): SnappingSeekBar =
+    fun setSeekBarPadding(padding: FloatArray): SnappingSeekBar =
             setSeekBarPadding(padding[0], padding[1], padding[2], padding[3])
 
     fun setSeekBarPadding(padding: Float): SnappingSeekBar =
@@ -434,7 +434,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         return this
     }
 
-    private fun setSeekBarMargin(margin: FloatArray): SnappingSeekBar =
+    fun setSeekBarMargin(margin: FloatArray): SnappingSeekBar =
             setSeekBarMargin(margin[0], margin[1], margin[2], margin[3])
 
     fun setSeekBarMargin(margin: Float): SnappingSeekBar =
@@ -464,7 +464,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         return this
     }
 
-    private fun setIndicatorSize(indicatorSize: Float): SnappingSeekBar {
+    fun setIndicatorSize(indicatorSize: Float): SnappingSeekBar {
         this.indicatorSize = indicatorSize
         return this
     }
@@ -486,7 +486,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         return this
     }
 
-    private fun setIndicatorTextSize(textSize: Float): SnappingSeekBar {
+    fun setIndicatorTextSize(textSize: Float): SnappingSeekBar {
         indicatorTextSize = textSize
         return this
     }

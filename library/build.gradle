@@ -1,14 +1,16 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
 group='com.github.jozsefmezei'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    compileSdkVersion 29
+    buildToolsVersion "29.0.3"
 
     defaultConfig {
-        minSdkVersion 15
-        targetSdkVersion 25
+        minSdkVersion 16
+        targetSdkVersion 29
         versionCode 2
         versionName "1.0.1"
     }
@@ -22,9 +24,10 @@ android {
     dexOptions {
         preDexLibraries = false
     }
+}
 
-    dependencies{
-        compile 'com.android.support:support-v4:25.1.1'
-        compile 'com.android.support:appcompat-v7:25.1.1'
-    }
+dependencies{
+    implementation 'androidx.appcompat:appcompat:1.1.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

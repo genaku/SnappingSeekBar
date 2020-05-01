@@ -109,7 +109,7 @@ dependencies {
 ## Developed by
 * Tobias Buchholz - <tobias.buchholz89@gmail.com>
 * upgraded by József Mezei
-* refactored, optimized and upgraded by Gena Kuchergin
+* migrated to Kotlin, refactored, optimized and upgraded by Gena Kuchergin
 
 ## License
 

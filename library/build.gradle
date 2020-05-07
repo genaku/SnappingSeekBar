@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
 apply plugin: 'com.github.dcendents.android-maven'
-group='com.github.genaku'
+group = 'com.github.genaku'
 
 android {
     compileSdkVersion 29
@@ -26,8 +26,12 @@ android {
     }
 }
 
-dependencies{
+dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:5.6.1"
+    testImplementation "io.kotlintest:kotlintest-runner-junit5:3.4.2"
+    testImplementation group: 'org.slf4j', name: 'slf4j-simple', version: "1.7.30"
 }

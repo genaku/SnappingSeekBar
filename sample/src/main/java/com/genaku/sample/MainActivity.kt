@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.genaku.snappingseekbar.SnappingSeekBar
 import com.genaku.snappingseekbar.SnappingSeekBar.OnItemSelectionListener
-import com.genaku.snappingseekbar.models.SeekBarElement
+import com.genaku.snappingseekbar.model.VariableSeekBarItem
 import com.genaku.snappingseekbar.utils.UiUtils.LayoutPreparedListener
 import com.genaku.snappingseekbar.utils.UiUtils.waitForLayoutPrepared
 
@@ -22,7 +22,7 @@ import com.genaku.snappingseekbar.utils.UiUtils.waitForLayoutPrepared
 class MainActivity : Activity(), OnItemSelectionListener {
 
     private var layout: LinearLayout? = null
-    private var elements: MutableList<SeekBarElement>? = null
+    private var elements: MutableList<VariableSeekBarItem>? = null
     private lateinit var snappingSeekBar: SnappingSeekBar
     private lateinit var snappingSeekBar2: SnappingSeekBar
     private var colorBlack = 0
@@ -47,54 +47,54 @@ class MainActivity : Activity(), OnItemSelectionListener {
     }
 
     private fun snappingSeekBarFromList() {
-        val elements = mutableListOf<SeekBarElement>()
-        elements.add(SeekBarElement(
+        val elements = mutableListOf<VariableSeekBarItem>()
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "1",
+                name = "1",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background_small,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "2",
+                name = "2",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "3",
+                name = "3",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background_small,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "4",
+                name = "4",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "5",
+                name = "5",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background_small,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "6",
+                name = "6",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
-        elements.add(SeekBarElement(
+        elements.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
                 indicatorReachedColor = ContextCompat.getColor(this, R.color.red),
-                indicatorText = "7",
+                name = "7",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
         this.elements = elements
@@ -111,41 +111,41 @@ class MainActivity : Activity(), OnItemSelectionListener {
     }
 
     private fun snappingSeekBarFromList2() {
-        val elements2 = mutableListOf<SeekBarElement>()
-        elements2.add(SeekBarElement(
+        val elements2 = mutableListOf<VariableSeekBarItem>()
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.rect_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
-                indicatorText = "1",
+                name = "1",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        elements2.add(SeekBarElement(
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.green),
-                indicatorText = "2",
+                name = "2",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        elements2.add(SeekBarElement(
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background_small,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
-                indicatorText = "3",
+                name = "3",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        elements2.add(SeekBarElement(
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.rect_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.green),
-                indicatorText = "4",
+                name = "4",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        elements2.add(SeekBarElement(
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
-                indicatorText = "5",
+                name = "5",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        elements2.add(SeekBarElement(
+        elements2.add(VariableSeekBarItem(
                 indicatorDrawableId = R.drawable.circle_background,
                 indicatorColor = ContextCompat.getColor(this, R.color.blue),
-                indicatorText = "6",
+                name = "6",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
         snappingSeekBar2.setItems(elements2)
@@ -161,6 +161,6 @@ class MainActivity : Activity(), OnItemSelectionListener {
     }
 
     override fun onItemSelected(itemIndex: Int, itemString: String?) {
-        Toast.makeText(this, getString(R.string.toast_item_selected, itemIndex.toString(), elements!![itemIndex].indicatorText), Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.toast_item_selected, itemIndex.toString(), elements!![itemIndex].name), Toast.LENGTH_SHORT).show()
     }
 }

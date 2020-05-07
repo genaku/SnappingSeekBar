@@ -6,6 +6,7 @@ import android.graphics.Paint
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
@@ -15,12 +16,12 @@ import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
-import com.genaku.snappingseekbar.models.SeekBarElement
+import com.genaku.snappingseekbar.model.VariableSeekBarItem
 import com.genaku.snappingseekbar.utils.UiUtils.LayoutPreparedListener
 import com.genaku.snappingseekbar.utils.UiUtils.getDPinPixel
-import com.genaku.snappingseekbar.utils.UiUtils.setColor
 import com.genaku.snappingseekbar.utils.UiUtils.setLeftMargin
 import com.genaku.snappingseekbar.utils.UiUtils.waitForLayoutPrepared
+import com.genaku.snappingseekbar.utils.setColor
 import java.util.*
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -67,11 +68,11 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
 
     // Progress ------------------------------------------------------------------------------------
     private var progressDrawable: Drawable? = null
-    private var fromProgress = 0
-    private var toProgress = 0f
+    private var progressFrom = 0
+    private var progressTo = 0f
 
     // Objects -------------------------------------------------------------------------------------
-    private var seekBarElementList: List<SeekBarElement> = emptyList()
+    private var seekBarElementList: List<VariableSeekBarItem> = emptyList()
 
     constructor(context: Context) : super(context) {
         _context = context
@@ -154,6 +155,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         if (items.size > 1) {
             indicatorItems = items
             indicatorCount = indicatorItems.size
+            initIndicators()
         } else {
             throw IllegalStateException("SnappingSeekBar has to contain at least 2 items")
         }
@@ -258,21 +260,20 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         checkIndicatorDrawable(index)
         val drawable = resources.getDrawable(indicatorDrawableId)
         indicator.setBackgroundDrawable(drawable)
-        setColor(indicator.background, indicatorColor)
+        indicator.background?.setColor(indicatorColor)
         return indicator
     }
 
     // Change indicator drawable and/or color from list
-    private fun checkIndicatorDrawable(index: Int): Boolean {
-        if (seekBarElementList.isEmpty()) return false
+    private fun checkIndicatorDrawable(index: Int) {
+        if (seekBarElementList.isEmpty()) return
         val element = seekBarElementList[index]
-        indicatorDrawableId = element.indicatorDrawableId
-        indicatorColor = if (element.indicatorReachedColor != -1 && toProgress >= indicatorList.size * (100 / indicatorCount)) element.indicatorReachedColor else element.indicatorColor
-        return true
+        indicatorDrawableId = element.indicatorDrawableId!!
+        indicatorColor = if (element.indicatorReachedColor != null && progressTo >= indicatorList.size * (100 / indicatorCount)) element.indicatorReachedColor!! else element.indicatorColor!!
     }
 
     private fun checkIndicatorColor() {
-        val reach = (toProgress / sectionLength).roundToInt()
+        val reach = (progressTo / sectionLength).roundToInt()
         if (reachedIndicator == reach || indicatorList.isEmpty() || seekBarElementList.isEmpty()) return
         if (reachedIndicator > reach) changeIndicatorColor(reachedIndicator, reach + 1, true) else changeIndicatorColor(reach, reachedIndicator, false)
         reachedIndicator = reach
@@ -284,7 +285,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
             val element = seekBarElementList[i]
             if (element.indicatorReachedColor == -1) return
             val color = if (back) element.indicatorColor else element.indicatorReachedColor
-            setColor(view.background, color)
+            view.background?.setColor(color!!)
         }
     }
 
@@ -300,6 +301,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
         val textParams = LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val numberLeftMargin = (seekBarWidthWithoutThumbOffset / 100f * index * sectionLength + thumbnailWidth / 2f).roundToInt()
         val numberTopMargin = (thumb.intrinsicHeight / 2 - (indicatorSize / 2f).roundToInt() + indicatorTextMargin[1]).roundToInt()
+        Log.d("TAG", "addText $index, $thumbnailWidth, $numberLeftMargin")
         checkIndicatorText(index)
         val view = createIndicatorText(index)
         textParams.setMargins(
@@ -323,7 +325,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
 
     private fun getIndicatorText(index: Int): String {
         return if (seekBarElementList.isNotEmpty())
-            seekBarElementList[index].indicatorText
+            seekBarElementList[index].name
         else
             indicatorItems[index] ?: ""
     }
@@ -336,6 +338,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
                 val leftMargin = numberLeftMargin - viewWidth / 2
                 val paddingLeft = paddingLeft
                 val finalMargin = if (leftMargin < paddingLeft) paddingLeft else if (leftMargin + viewWidth > layoutWidth) layoutWidth - viewWidth else leftMargin
+                Log.d("TAG", "old leftMargin $finalMargin")
                 setLeftMargin(preparedView, finalMargin)
             }
         }
@@ -344,7 +347,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
     private fun checkIndicatorText(index: Int): Boolean {
         if (seekBarElementList.isNullOrEmpty()) return false
         val element = seekBarElementList[index]
-        indicatorTextColor = element.indicatorTextColor
+        indicatorTextColor = element.indicatorTextColor!!
         return true
     }
 
@@ -358,12 +361,12 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
     private fun handleSetFromProgress(progress: Int) {
         val slidingDelta = abs(progress - thumbPosition)
         if (slidingDelta > 1) {
-            fromProgress = progress
+            progressFrom = progress
         }
     }
 
     private fun handleSnapToClosestValue(animate: Boolean) {
-        val selectedSection = (toProgress / sectionLength).roundToInt()
+        val selectedSection = (progressTo / sectionLength).roundToInt()
         val valueToSnap = selectedSection * sectionLength
         animateProgressBar(valueToSnap, animate)
         invokeItemSelected(selectedSection.toFloat())
@@ -371,7 +374,7 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
 
     private fun animateProgressBar(toProgress: Float, animate: Boolean) {
         seekBar?.run {
-            val anim = ProgressBarAnimation(this, fromProgress.toFloat(), (toProgress * refine).roundToInt().toFloat())
+            val anim = ProgressBarAnimation(this, progressFrom.toFloat(), (toProgress * refine).roundToInt().toFloat())
             anim.duration = if (animate) 200 else 0L
             startAnimation(anim)
         }
@@ -391,14 +394,14 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
     var progress: Int
         get() = seekBar?.progress ?: 0
         set(progress) {
-            toProgress = progress.toFloat()
+            progressTo = progress.toFloat()
             handleSnapToClosestValue(true)
         }
 
     private fun getProgressForIndex(index: Int): Float = index * sectionLength
 
     val selectedItemIndex: Int
-        get() = (toProgress / sectionLength).roundToInt()
+        get() = (progressTo / sectionLength).roundToInt()
 
     private val thumbnailWidth: Int
         get() = thumb.intrinsicWidth
@@ -498,20 +501,20 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
     }
 
     fun setProgressToIndex(index: Int): SnappingSeekBar {
-        toProgress = getProgressForIndex(index)
+        progressTo = getProgressForIndex(index)
         reachedIndicator = index
         handleSnapToClosestValue(false)
         return this
     }
 
     fun setProgressToIndexWithAnimation(index: Int): SnappingSeekBar {
-        toProgress = getProgressForIndex(index)
-        animateProgressBar(toProgress, true)
+        progressTo = getProgressForIndex(index)
+        animateProgressBar(progressTo, true)
         return this
     }
 
     fun setProgressColor(progressColor: Int): SnappingSeekBar {
-        setColor(progressDrawable, progressColor)
+        progressDrawable?.setColor(progressColor)
         return this
     }
 
@@ -525,12 +528,12 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
     }
 
     fun setThumbnailColor(thumbnailColor: Int): SnappingSeekBar {
-        setColor(thumb, thumbnailColor)
+        thumb.setColor(thumbnailColor)
         return this
     }
 
     // Object -------------------------------------------------
-    fun setItems(list: List<SeekBarElement>?): SnappingSeekBar {
+    fun setItems(list: List<VariableSeekBarItem>?): SnappingSeekBar {
         if (list.isNullOrEmpty()) return this
         seekBarElementList = list
         indicatorCount = list.size
@@ -546,14 +549,14 @@ class SnappingSeekBar : RelativeLayout, OnSeekBarChangeListener {
 
     // Listeners -----------------------------------------------------------------------------------
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-        toProgress = progress / refine
+        progressTo = progress / refine
         initThumbPosition(progress, fromUser)
         handleSetFromProgress(progress)
         if (fromUser) checkIndicatorColor()
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {
-        fromProgress = this.seekBar?.progress ?: 0
+        progressFrom = this.seekBar?.progress ?: 0
         thumbPosition = NOT_INITIALIZED_THUMB_POSITION
     }
 

@@ -2,6 +2,10 @@ package com.genaku.snappingseekbar.model
 
 import kotlin.math.roundToInt
 
+/**
+ * Author: Gena Kuchergin
+ * Date: 01.05.2020
+ */
 open class SeekBarModel {
 
     private var _items: List<ISeekBarItem> = emptyList()

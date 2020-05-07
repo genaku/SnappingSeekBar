@@ -28,8 +28,8 @@ class SeekBarModelTest : FreeSpec() {
         "initial range" - {
             model.getIdx(20f) shouldBe 0
 
-            "range set to 100" - {
-                model.setWidth(100f)
+            "range set to 90" - {
+                model.setWidth(90f)
                 model.getIdx(20f) shouldBe 2
 
                 "find nearest" {
@@ -38,8 +38,8 @@ class SeekBarModelTest : FreeSpec() {
                     model.getIdx(25f) shouldBe 3
                 }
 
-                "set 100 items" {
-                    val items2 = generateItems(100)
+                "set 91 item" {
+                    val items2 = generateItems(91)
                     model.setItems(items2)
                     model.getIdx(20f) shouldBe 20
                     model.getTitle(20) shouldBe "20"

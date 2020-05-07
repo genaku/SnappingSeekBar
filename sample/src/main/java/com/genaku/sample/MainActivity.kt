@@ -6,11 +6,11 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import com.genaku.snappingseekbar.SnappingSeekBar
-import com.genaku.snappingseekbar.SnappingSeekBar.OnItemSelectionListener
+import com.genaku.snappingseekbar.SnappingSeekBarOld
+import com.genaku.snappingseekbar.SnappingSeekBarOld.OnItemSelectionListener
 import com.genaku.snappingseekbar.model.VariableSeekBarItem
-import com.genaku.snappingseekbar.utils.UiUtils.LayoutPreparedListener
-import com.genaku.snappingseekbar.utils.UiUtils.waitForLayoutPrepared
+import com.genaku.snappingseekbar.utils.LayoutPreparedListener
+import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
 
 /**
  * User: tobiasbuchholz
@@ -23,8 +23,8 @@ class MainActivity : Activity(), OnItemSelectionListener {
 
     private var layout: LinearLayout? = null
     private var elements: MutableList<VariableSeekBarItem>? = null
-    private lateinit var snappingSeekBar: SnappingSeekBar
-    private lateinit var snappingSeekBar2: SnappingSeekBar
+    private lateinit var snappingSeekBarOld: SnappingSeekBarOld
+    private lateinit var snappingSeekBarOld2: SnappingSeekBarOld
     private var colorBlack = 0
     private var colorRed = 0
     private var colorGrey = 0
@@ -33,8 +33,8 @@ class MainActivity : Activity(), OnItemSelectionListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         layout = findViewById<View>(R.id.activity_main_layout) as LinearLayout
-        snappingSeekBar = findViewById<View>(R.id.snapp) as SnappingSeekBar
-        snappingSeekBar2 = findViewById<View>(R.id.snapp_2) as SnappingSeekBar
+        snappingSeekBarOld = findViewById<View>(R.id.snapp) as SnappingSeekBarOld
+        snappingSeekBarOld2 = findViewById<View>(R.id.snapp_2) as SnappingSeekBarOld
         init()
         snappingSeekBarFromList()
         snappingSeekBarFromList2()
@@ -98,14 +98,14 @@ class MainActivity : Activity(), OnItemSelectionListener {
                 indicatorTextColor = ContextCompat.getColor(this, R.color.blue)
         ))
         this.elements = elements
-        snappingSeekBar.setItems(elements)
+        snappingSeekBarOld.setItems(elements)
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
                 .setOnItemSelectionListener(this)
-        waitForLayoutPrepared(snappingSeekBar, object : LayoutPreparedListener {
+        waitForLayoutPrepared(snappingSeekBarOld, object : LayoutPreparedListener {
             override fun onLayoutPrepared(preparedView: View) {
-                snappingSeekBar.setProgressToIndex(2)
+                snappingSeekBarOld.setProgressToIndex(2)
             }
         })
     }
@@ -148,14 +148,14 @@ class MainActivity : Activity(), OnItemSelectionListener {
                 name = "6",
                 indicatorTextColor = ContextCompat.getColor(this, R.color.green_darker)
         ))
-        snappingSeekBar2.setItems(elements2)
+        snappingSeekBarOld2.setItems(elements2)
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
                 .setOnItemSelectionListener(this)
-        waitForLayoutPrepared(snappingSeekBar2, object : LayoutPreparedListener {
+        waitForLayoutPrepared(snappingSeekBarOld2, object : LayoutPreparedListener {
             override fun onLayoutPrepared(preparedView: View) {
-                snappingSeekBar2.setProgressToIndex(2)
+                snappingSeekBarOld2.setProgressToIndex(2)
             }
         })
     }

@@ -8,11 +8,18 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import com.genaku.snappingseekbar.MarginData
-import com.genaku.snappingseekbar.utils.UiUtils
-import com.genaku.snappingseekbar.utils.UiUtils.measureTextViewWidth
+import com.genaku.snappingseekbar.utils.LayoutPreparedListener
+import com.genaku.snappingseekbar.utils.getDPinPixel
+import com.genaku.snappingseekbar.utils.measureTextViewWidth
 import com.genaku.snappingseekbar.utils.setColor
+import com.genaku.snappingseekbar.utils.setLeftMargin
+import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
 import kotlin.math.roundToInt
 
+/**
+ * Author: Gena Kuchergin
+ * Date: 01.05.2020
+ */
 open class DefaultIndicators(
         protected val context: Context,
         protected val model: SeekBarModel,
@@ -32,7 +39,7 @@ open class DefaultIndicators(
     override var indicatorTextSize = 0f
 
     override fun initIndicators(seekBar: SeekBar) {
-        UiUtils.waitForLayoutPrepared(seekBar, object : UiUtils.LayoutPreparedListener {
+        waitForLayoutPrepared(seekBar, object : LayoutPreparedListener {
             override fun onLayoutPrepared(preparedView: View) {
                 val width = preparedView.width
                 model.setWidth(width.toFloat())
@@ -61,7 +68,8 @@ open class DefaultIndicators(
     }
 
     private fun initTextLabels(seekBarWidth: Int, thumbWidth: Float, thumbHalfHeight: Int, indicatorPosKoef: Float) {
-        if (getAllIndicatorTextWidth() > seekBarWidth) {
+        val width = seekBarWidth - thumbWidth
+        if (getAllIndicatorTextWidth() > width) {
             showBoundIndicatorTexts(thumbWidth, thumbHalfHeight, indicatorPosKoef)
         } else {
             showAllIndicatorTexts(thumbWidth, thumbHalfHeight, indicatorPosKoef)
@@ -72,7 +80,7 @@ open class DefaultIndicators(
         var textWidth = 0
         val margin = (indicatorTextMargin.right + indicatorTextMargin.left).roundToInt()
         for (i in 0 until model.size) {
-            val width = measureTextViewWidth(model.getTitle(i), indicatorWidth(i, true))
+            val width = measureTextViewWidth(model.getTitle(i), getIndicatorTextSize(i, true))
             textWidth += width + margin
         }
         return textWidth
@@ -95,12 +103,12 @@ open class DefaultIndicators(
         val numberTopMargin = (thumbHalfHeight - (indicatorHeight(index, index <= reachedIndicator) / 2f).roundToInt() + indicatorTextMargin.top).roundToInt()
         val view = createIndicatorText(index, model.getTitle(index), index <= reachedIndicator)
         textParams.setMargins(
-                UiUtils.getDPinPixel(context, indicatorTextMargin.left),
+                getDPinPixel(context, indicatorTextMargin.left),
                 numberTopMargin,
-                UiUtils.getDPinPixel(context, indicatorTextMargin.right),
-                UiUtils.getDPinPixel(context, indicatorTextMargin.bottom))
+                getDPinPixel(context, indicatorTextMargin.right),
+                getDPinPixel(context, indicatorTextMargin.bottom))
         viewGroup.addView(view, textParams)
-        UiUtils.waitForLayoutPrepared(view, object : UiUtils.LayoutPreparedListener {
+        waitForLayoutPrepared(view, object : LayoutPreparedListener {
             override fun onLayoutPrepared(preparedView: View) {
                 val layoutRight = viewGroup.width - viewGroup.paddingRight
                 val viewWidth = preparedView.width
@@ -110,7 +118,7 @@ open class DefaultIndicators(
                     leftMargin + viewWidth > layoutRight -> layoutRight - viewWidth
                     else -> leftMargin
                 }
-                UiUtils.setLeftMargin(preparedView, finalMargin)
+                setLeftMargin(preparedView, finalMargin)
             }
         })
     }
@@ -145,7 +153,7 @@ open class DefaultIndicators(
     override fun createIndicatorText(idx: Int, text: String, reached: Boolean): AppCompatTextView {
         val textIndicator = AppCompatTextView(context)
         textIndicator.text = text
-        textIndicator.setTextSize(TypedValue.COMPLEX_UNIT_SP, getIndicatorTextSize(idx, reached))
+        textIndicator.setTextSize(TypedValue.COMPLEX_UNIT_PX, getIndicatorTextSize(idx, reached))
         textIndicator.setTextColor(getIndicatorTextColor(idx, reached))
         labels[idx] = textIndicator
         return textIndicator

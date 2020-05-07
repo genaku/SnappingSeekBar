@@ -3,29 +3,53 @@ package com.genaku.snappingseekbar.model
 import android.content.Context
 import android.view.ViewGroup
 
-class VariableIndicators(context: Context, model: SeekBarModel, viewGroup: ViewGroup)
-    : DefaultIndicators(context, model, viewGroup) {
+/**
+ * Author: Gena Kuchergin
+ * Date: 07.05.2020
+ */
+class VariableIndicators(context: Context, model: SeekBarModel, viewGroup: ViewGroup) :
+        DefaultIndicators(context, model, viewGroup) {
 
     override fun indicatorHeight(idx: Int, reached: Boolean): Float =
-            (model.getItem(idx) as VariableSeekBarItem?)?.indicatorSize ?: indicatorSize
+            when (val item = model.getItem(idx)) {
+                is VariableSeekBarItem -> item.indicatorSize ?: indicatorSize
+                else -> indicatorSize
+            }
 
     override fun indicatorWidth(idx: Int, reached: Boolean): Float =
-            (model.getItem(idx) as VariableSeekBarItem?)?.indicatorSize ?: indicatorSize
+            when (val item = model.getItem(idx)) {
+                is VariableSeekBarItem -> item.indicatorSize ?: indicatorSize
+                else -> indicatorSize
+            }
 
     override fun getIndicatorTextColor(idx: Int, reached: Boolean): Int =
-            (model.getItem(idx) as VariableSeekBarItem?)?.indicatorTextColor ?: indicatorTextColor
+            when (val item = model.getItem(idx)) {
+                is VariableSeekBarItem -> item.indicatorTextColor ?: indicatorTextColor
+                else -> indicatorTextColor
+            }
 
     override fun getIndicatorTextSize(idx: Int, reached: Boolean): Float =
-            (model.getItem(idx) as VariableSeekBarItem?)?.indicatorTextSize ?: indicatorTextSize
+            when (val item = model.getItem(idx)) {
+                is VariableSeekBarItem -> item.indicatorTextSize ?: indicatorTextSize
+                else -> indicatorTextSize
+            }
 
     override fun getIndicatorResId(idx: Int, reached: Boolean): Int =
-            (model.getItem(idx) as VariableSeekBarItem?)?.indicatorDrawableId ?: indicatorDrawableId
+            when (val item = model.getItem(idx)) {
+                is VariableSeekBarItem -> item.indicatorDrawableId ?: indicatorDrawableId
+                else -> indicatorDrawableId
+            }
 
     override fun getIndicatorColor(idx: Int, reached: Boolean): Int {
-        val element = model.getItem(idx) as VariableSeekBarItem?
-        return if (reached)
-            element?.indicatorReachedColor ?: indicatorReachedColor
-        else
-            element?.indicatorColor ?: indicatorColor
+        return when (val item = model.getItem(idx)) {
+            is VariableSeekBarItem -> if (reached)
+                item.indicatorReachedColor ?: indicatorReachedColor
+            else
+                item.indicatorColor ?: indicatorColor
+            else -> if (reached)
+                indicatorReachedColor
+            else
+                indicatorColor
+        }
     }
 }

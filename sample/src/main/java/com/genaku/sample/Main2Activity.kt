@@ -4,9 +4,10 @@ import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.genaku.snappingseekbar.model.VariableSeekBarItem
 import com.genaku.snappingseekbar.model.SimpleSeekBarItem
-import com.genaku.snappingseekbar.utils.UiUtils
+import com.genaku.snappingseekbar.model.VariableSeekBarItem
+import com.genaku.snappingseekbar.utils.LayoutPreparedListener
+import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
 import kotlinx.android.synthetic.main.activity_main2.*
 
 class Main2Activity : Activity() {
@@ -16,11 +17,11 @@ class Main2Activity : Activity() {
         setContentView(R.layout.activity_main2)
         val items = mutableListOf<SimpleSeekBarItem>()
         val oldItems = Array<String?>(4) { i -> "$i"}
-        for (i in 0..6) {
-            items.add(SimpleSeekBarItem("item $i"))
+        for (i in 100..200 step 6) {
+            items.add(SimpleSeekBarItem("$i"))
         }
         val colorRed = ContextCompat.getColor(this, R.color.red)
-        seek.setItems(getElements())
+        seek.setItems(items)
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbColor(colorRed)
@@ -35,7 +36,7 @@ class Main2Activity : Activity() {
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
-        UiUtils.waitForLayoutPrepared(snapp, object : UiUtils.LayoutPreparedListener {
+        waitForLayoutPrepared(snapp, object : LayoutPreparedListener {
             override fun onLayoutPrepared(preparedView: View) {
                 snapp.setProgressToIndex(2)
             }

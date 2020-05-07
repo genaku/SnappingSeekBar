@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".Main2Activity">
 
-    <com.genaku.snappingseekbar.SnappingSeekBar
+    <com.genaku.snappingseekbar.SnappingSeekBarOld
         android:id="@+id/seekOld"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -15,7 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.genaku.snappingseekbar.SnappingSeekBarNew
+    <com.genaku.snappingseekbar.SnappingSeekBar
         android:id="@+id/seek"
         android:layout_width="match_parent"
         android:layout_height="48dp"
@@ -23,7 +23,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.genaku.snappingseekbar.SnappingSeekBar
+    <com.genaku.snappingseekbar.SnappingSeekBarOld
         android:id="@+id/snapp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

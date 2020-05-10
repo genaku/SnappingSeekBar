@@ -48,6 +48,10 @@ open class SeekBarModel {
 
     fun getPosition(idx: Int): Float = _sectionWidth * idx
 
+    fun setIndex(idx: Int) {
+        _selectedIdx = idx
+    }
+
     fun closestPosition(position: Float): Float {
         _selectedIdx = getIdx(position)
         return _selectedIdx * _sectionWidth

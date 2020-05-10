@@ -14,7 +14,7 @@ interface IIndicators {
     var indicatorReachedColor: Int
 
     fun clear()
-    fun initIndicators(seekBar: SeekBar)
+    fun initIndicators(seekBar: SeekBar, afterInit: () -> Unit)
     fun setIndicatorTextMargin(margin: Float)
     fun setIndicatorTextMargin(marginLeft: Float, marginTop: Float, marginRight: Float, marginBottom: Float)
     fun createIndicator(idx: Int, reached: Boolean): View

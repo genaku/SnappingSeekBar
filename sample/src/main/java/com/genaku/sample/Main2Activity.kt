@@ -2,12 +2,9 @@ package com.genaku.sample
 
 import android.app.Activity
 import android.os.Bundle
-import android.view.View
 import androidx.core.content.ContextCompat
 import com.genaku.snappingseekbar.model.SimpleSeekBarItem
 import com.genaku.snappingseekbar.model.VariableSeekBarItem
-import com.genaku.snappingseekbar.utils.LayoutPreparedListener
-import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
 import kotlinx.android.synthetic.main.activity_main2.*
 
 class Main2Activity : Activity() {
@@ -16,8 +13,8 @@ class Main2Activity : Activity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main2)
         val items = mutableListOf<SimpleSeekBarItem>()
-        val oldItems = Array<String?>(4) { i -> "$i"}
-        for (i in 100..200 step 6) {
+        val oldItems = Array<String?>(4) { i -> "$i" }
+        for (i in 100..200 step 5) {
             items.add(SimpleSeekBarItem("$i"))
         }
         val colorRed = ContextCompat.getColor(this, R.color.red)
@@ -36,11 +33,7 @@ class Main2Activity : Activity() {
                 .setProgressBaseDrawable(R.drawable.progress)
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
-        waitForLayoutPrepared(snapp, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                snapp.setProgressToIndex(2)
-            }
-        })
+                .setProgressToIndex(2)
     }
 
     private fun getElements(): MutableList<VariableSeekBarItem> {

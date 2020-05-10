@@ -9,7 +9,6 @@ import androidx.core.content.ContextCompat
 import com.genaku.snappingseekbar.SnappingSeekBarOld
 import com.genaku.snappingseekbar.SnappingSeekBarOld.OnItemSelectionListener
 import com.genaku.snappingseekbar.model.VariableSeekBarItem
-import com.genaku.snappingseekbar.utils.LayoutPreparedListener
 import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
 
 /**
@@ -103,11 +102,9 @@ class MainActivity : Activity(), OnItemSelectionListener {
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
                 .setOnItemSelectionListener(this)
-        waitForLayoutPrepared(snappingSeekBarOld, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                snappingSeekBarOld.setProgressToIndex(2)
-            }
-        })
+        waitForLayoutPrepared(snappingSeekBarOld) {
+            snappingSeekBarOld.setProgressToIndex(2)
+        }
     }
 
     private fun snappingSeekBarFromList2() {
@@ -153,11 +150,9 @@ class MainActivity : Activity(), OnItemSelectionListener {
                 .setProgressColor(colorRed)
                 .setThumbnailColor(colorRed)
                 .setOnItemSelectionListener(this)
-        waitForLayoutPrepared(snappingSeekBarOld2, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                snappingSeekBarOld2.setProgressToIndex(2)
-            }
-        })
+        waitForLayoutPrepared(snappingSeekBarOld2) {
+            snappingSeekBarOld2.setProgressToIndex(2)
+        }
     }
 
     override fun onItemSelected(itemIndex: Int, itemString: String?) {

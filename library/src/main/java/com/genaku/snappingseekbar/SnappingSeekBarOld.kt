@@ -17,7 +17,6 @@ import androidx.appcompat.widget.AppCompatSeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.core.content.ContextCompat
 import com.genaku.snappingseekbar.model.VariableSeekBarItem
-import com.genaku.snappingseekbar.utils.LayoutPreparedListener
 import com.genaku.snappingseekbar.utils.getDPinPixel
 import com.genaku.snappingseekbar.utils.setColor
 import com.genaku.snappingseekbar.utils.setLeftMargin
@@ -179,12 +178,10 @@ class SnappingSeekBarOld : RelativeLayout, OnSeekBarChangeListener {
 
     // Indicators -------------------------------------------
     private fun initIndicators() {
-        waitForLayoutPrepared(seekBar, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                val seekBarWidth = preparedView.width
-                initIndicators(seekBarWidth)
-            }
-        })
+        waitForLayoutPrepared(seekBar) { preparedView ->
+            val seekBarWidth = preparedView.width
+            initIndicators(seekBarWidth)
+        }
     }
 
     private fun initIndicators(seekBarWidth: Int) {
@@ -312,7 +309,14 @@ class SnappingSeekBarOld : RelativeLayout, OnSeekBarChangeListener {
         textParams.topMargin = numberTopMargin
         addView(view, textParams)
         indicatorTextList.add(view)
-        waitForLayoutPrepared(view, createTextIndicatorLayoutPreparedListener(numberLeftMargin))
+        waitForLayoutPrepared(view) { preparedView ->
+            val layoutWidth = width - paddingRight
+            val viewWidth = preparedView.width
+            val leftMargin = numberLeftMargin - viewWidth / 2
+            val paddingLeft = paddingLeft
+            val finalMargin = if (leftMargin < paddingLeft) paddingLeft else if (leftMargin + viewWidth > layoutWidth) layoutWidth - viewWidth else leftMargin
+            setLeftMargin(preparedView, finalMargin)
+        }
     }
 
     private fun createIndicatorText(index: Int): AppCompatTextView {
@@ -328,19 +332,6 @@ class SnappingSeekBarOld : RelativeLayout, OnSeekBarChangeListener {
             seekBarElementList[index].name
         else
             indicatorItems[index] ?: ""
-    }
-
-    private fun createTextIndicatorLayoutPreparedListener(numberLeftMargin: Int): LayoutPreparedListener {
-        return object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                val layoutWidth = width - paddingRight
-                val viewWidth = preparedView.width
-                val leftMargin = numberLeftMargin - viewWidth / 2
-                val paddingLeft = paddingLeft
-                val finalMargin = if (leftMargin < paddingLeft) paddingLeft else if (leftMargin + viewWidth > layoutWidth) layoutWidth - viewWidth else leftMargin
-                setLeftMargin(preparedView, finalMargin)
-            }
-        }
     }
 
     private fun checkIndicatorText(index: Int): Boolean {
@@ -414,7 +405,7 @@ class SnappingSeekBarOld : RelativeLayout, OnSeekBarChangeListener {
         }
 
     // Setters ------------------------------------------------------------------------------------
-    // SeekBar ---------------------------------------------
+// SeekBar ---------------------------------------------
     fun setSeekbarColor(seekbarColor: Int): SnappingSeekBarOld {
         seekBar?.setBackgroundColor(seekbarColor)
         return this

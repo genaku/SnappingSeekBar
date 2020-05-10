@@ -15,40 +15,22 @@ import kotlin.math.roundToInt
 /**
  * User: tobiasbuchholz
  * Date: 28.07.14 | Time: 14:18
+ *
+ * Refactored to Kotlin by Gena Kuchergin on 10.05.2020
  */
-fun getDPinPixel(context: Context, value: Float): Int {
-    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, value, context.resources.displayMetrics).roundToInt()
-}
-
-fun measureTextViewWidth(text: String, textSize: Float): Int {
-    val p = Paint()
-    p.textSize = textSize
-    p.getTextBounds(text, 0, text.length, Rect())
-    val mt: Float = p.measureText(text)
-    return mt.roundToInt()
-}
-
-fun Drawable.setColor(color: Int) {
-    this.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
-}
-
 fun setLeftMargin(view: View, leftMargin: Int) {
     val params = view.layoutParams as RelativeLayout.LayoutParams
     params.leftMargin = leftMargin
     view.layoutParams = params
 }
 
-fun waitForLayoutPrepared(view: View?, listener: LayoutPreparedListener?) {
+fun waitForLayoutPrepared(view: View?, onLayoutPrepared: (preparedView: View) -> Unit) {
     view ?: return
     val viewTreeObserver = view.viewTreeObserver
     viewTreeObserver?.addOnGlobalLayoutListener(object : OnGlobalLayoutListener {
         override fun onGlobalLayout() {
-            invokeLayoutListener()
+            onLayoutPrepared(view)
             removeGlobalOnLayoutListenerIfNeeded()
-        }
-
-        private fun invokeLayoutListener() {
-            listener?.onLayoutPrepared(view)
         }
 
         private fun removeGlobalOnLayoutListenerIfNeeded() {
@@ -60,6 +42,22 @@ fun waitForLayoutPrepared(view: View?, listener: LayoutPreparedListener?) {
     })
 }
 
-interface LayoutPreparedListener {
-    fun onLayoutPrepared(preparedView: View)
+fun getDPinPixel(context: Context, value: Float): Int {
+    return TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            value,
+            context.resources.displayMetrics
+    ).roundToInt()
+}
+
+fun measureTextViewWidth(s: String, textSize: Float): Int {
+    val p = Paint()
+    p.textSize = textSize
+    p.getTextBounds(s, 0, s.length, Rect())
+    val mt: Float = p.measureText(s)
+    return mt.roundToInt()
+}
+
+fun Drawable.setColor(color: Int) {
+    this.colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
 }

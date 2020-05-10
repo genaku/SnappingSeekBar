@@ -8,12 +8,12 @@ import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.widget.AppCompatTextView
 import com.genaku.snappingseekbar.MarginData
-import com.genaku.snappingseekbar.utils.LayoutPreparedListener
 import com.genaku.snappingseekbar.utils.getDPinPixel
 import com.genaku.snappingseekbar.utils.measureTextViewWidth
 import com.genaku.snappingseekbar.utils.setColor
 import com.genaku.snappingseekbar.utils.setLeftMargin
 import com.genaku.snappingseekbar.utils.waitForLayoutPrepared
+import kotlin.math.min
 import kotlin.math.roundToInt
 
 /**
@@ -38,26 +38,25 @@ open class DefaultIndicators(
     override var indicatorReachedColor: Int = 0
     override var indicatorTextSize = 0f
 
-    override fun initIndicators(seekBar: SeekBar) {
-        waitForLayoutPrepared(seekBar, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                val width = preparedView.width
-                model.setWidth(width.toFloat())
-                seekBar.max = width
-                val thumb = seekBar.thumb
-                val thumbWidth = thumb.intrinsicWidth.toFloat()
-                val thumbHalfHeight = thumb.intrinsicHeight / 2
-                val indicatorPosKoef = 1f - thumbWidth / width
-                clear()
-                initIndicators(thumbWidth, thumbHalfHeight, indicatorPosKoef)
-                initTextLabels(width, thumbWidth, thumbHalfHeight, indicatorPosKoef)
-            }
-        })
+    override fun initIndicators(seekBar: SeekBar, afterInit: () -> Unit) {
+        waitForLayoutPrepared(seekBar) { preparedView ->
+            val width = preparedView.width
+            model.setWidth(width.toFloat())
+            seekBar.max = width
+            val thumb = seekBar.thumb
+            val thumbWidth = thumb.intrinsicWidth.toFloat()
+            val thumbHalfHeight = thumb.intrinsicHeight / 2
+            val indicatorPosKoef = 1f - thumbWidth / width
+            clear()
+            initIndicators(thumbWidth, thumbHalfHeight, indicatorPosKoef)
+            initTextLabels(width, thumbWidth, thumbHalfHeight, indicatorPosKoef)
+            afterInit()
+        }
     }
 
     private fun initIndicators(thumbWidth: Float, thumbHalfHeight: Int, indicatorPosKoef: Float) {
         for (i in 0 until model.size) {
-            val indicator = createIndicator(i, i == 0)
+            val indicator = createIndicator(i, i <= reachedIndicator)
             val width = indicatorWidth(i, false)
             val height = indicatorHeight(i, false)
             val indicatorParams = RelativeLayout.LayoutParams(width.roundToInt(), height.roundToInt())
@@ -106,21 +105,20 @@ open class DefaultIndicators(
                 getDPinPixel(context, indicatorTextMargin.left),
                 numberTopMargin,
                 getDPinPixel(context, indicatorTextMargin.right),
-                getDPinPixel(context, indicatorTextMargin.bottom))
+                getDPinPixel(context, indicatorTextMargin.bottom)
+        )
         viewGroup.addView(view, textParams)
-        waitForLayoutPrepared(view, object : LayoutPreparedListener {
-            override fun onLayoutPrepared(preparedView: View) {
-                val layoutRight = viewGroup.width - viewGroup.paddingRight
-                val viewWidth = preparedView.width
-                val leftMargin = numberLeftMargin - viewWidth / 2
-                val finalMargin = when {
-                    leftMargin < viewGroup.paddingLeft -> viewGroup.paddingLeft
-                    leftMargin + viewWidth > layoutRight -> layoutRight - viewWidth
-                    else -> leftMargin
-                }
-                setLeftMargin(preparedView, finalMargin)
+        waitForLayoutPrepared(view) { preparedView ->
+            val layoutRight = viewGroup.width - viewGroup.paddingRight
+            val viewWidth = preparedView.width
+            val leftMargin = numberLeftMargin - viewWidth / 2
+            val finalMargin = when {
+                leftMargin < viewGroup.paddingLeft -> viewGroup.paddingLeft
+                leftMargin + viewWidth > layoutRight -> layoutRight - viewWidth
+                else -> leftMargin
             }
-        })
+            setLeftMargin(preparedView, finalMargin)
+        }
     }
 
     override fun clear() {
@@ -174,9 +172,10 @@ open class DefaultIndicators(
     }
 
     private fun changeIndicatorColor(reach: Int, from: Int, back: Boolean) {
-        for (i in from..reach) {
-            updateIndicatorColor(i, !back)
-        }
+        if (from < indicators.size)
+            for (i in from..min(reach, indicators.size - 1)) {
+                updateIndicatorColor(i, !back)
+            }
     }
 
     override fun setIndicatorTextMargin(margin: Float) {

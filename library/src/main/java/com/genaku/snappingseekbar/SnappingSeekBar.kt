@@ -224,7 +224,11 @@ class SnappingSeekBar @JvmOverloads constructor(
 
     fun setItems(items: List<ISeekBarItem>) = apply {
         model.setItems(items)
-        seekBar?.run { indicators.initIndicators(this) }
+        seekBar?.run {
+            indicators.initIndicators(this) {
+                setProgressToIndex(model.selectedIdx)
+            }
+        }
     }
 
     fun setThumbDrawable(thumbDrawableId: Int) = apply {
@@ -244,7 +248,7 @@ class SnappingSeekBar @JvmOverloads constructor(
 
     fun setProgressToIndex(index: Int) {
         progressTo = model.getPosition(index)
-        handleSnapToClosestValue(false)
+        handleSnapToIndex(index)
         indicators.checkIndicatorColor(progressTo)
     }
 
@@ -291,6 +295,14 @@ class SnappingSeekBar @JvmOverloads constructor(
         animateProgressBar(positionToSnap, animate)
         invokeItemSelected(model.selectedIdx)
     }
+
+    private fun handleSnapToIndex(idx: Int) {
+        model.setIndex(idx)
+        val positionToSnap = model.getPosition(idx)
+        animateProgressBar(positionToSnap, false)
+        invokeItemSelected(model.selectedIdx)
+    }
+
 
     private fun animateProgressBar(positionTo: Float, animate: Boolean) {
         seekBar?.run {
